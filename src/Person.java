@@ -13,9 +13,10 @@ public class Person {
 	// will hold this persons location on screen
 	int xCoordinate;
 	int yCoordinate;
-	
 	int xIncrement;
 	int yIncrement;
+	
+	int cycleCounter = 0;
 	
 	// will hold the current statusColor of the person
 	Color statusColour; // statusCode?
@@ -32,7 +33,7 @@ public class Person {
 		isAlive = true;
 	}
 	
-	public Person(int widthValue, int heightValue, Color c) {
+	public Person(Color c, int widthValue, int heightValue) {
 		isAlive = true;	
 		statusColour = c;
 		
@@ -92,6 +93,74 @@ public class Person {
 				loopflag = false;
 			}
 		}//end loop
+	}
+	
+	public void setDead() {
+		this.isAlive = false;
+		//colour black
+		this.xIncrement = 0;
+		this.yIncrement = 0;
+		
+	}
+	
+	
+	
+	
+	
+	//added temporarily
+	
+	public Color getColor()
+	{
+		return statusColour;
+	}
+
+	public void setColor(Color color)
+	{
+		this.statusColour = color;
+	}
+
+	//getters and setters
+	public int getxCoord()
+	{
+		return xCoordinate;
+	}
+	public int getyCoord()
+	{
+		return yCoordinate;
+	}
+//	public int getDiameter()
+//	{
+//		return diameter;
+//	}
+	
+	public void setxCoord(int xCoord)
+	{
+		this.xCoordinate = xCoord;
+	}
+
+	public void setyCoord(int yCoord)
+	{
+		this.yCoordinate = yCoord;
+	}
+  
+	public int getxIncrement()
+	{
+		return xIncrement;
+	}
+
+	public void setxIncrement(int xIncrement)
+	{
+		this.xIncrement = xIncrement;
+	}
+
+	public int getyIncrement()
+	{
+		return yIncrement;
+	}
+
+	public void setyIncrement(int yIncrement)
+	{
+		this.yIncrement = yIncrement;
 	}
 	
 //	public void xIncrement(int i) {

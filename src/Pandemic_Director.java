@@ -20,7 +20,7 @@ public class Pandemic_Director extends JPanel
 
 	//REVISION July 14 : create an array of Ball objects here in class scope
 	private final int ARRAY_SIZE = 500;//default to 500
-	private Ball [] people = new Ball[ARRAY_SIZE];
+	private Person [] people = new Person[ARRAY_SIZE];
 
 	//REVSION NEEDED HERE: need to use the Ball class to create two Ball objects
 	// with different starting locations
@@ -35,19 +35,17 @@ public class Pandemic_Director extends JPanel
 		//REVISION JULY 15
 		//use a loop to populate the people with balls with random positions
 		//Set the color of the first ball to RED
-		people[0] = new Ball(IMG_DIM, Color.RED,WIDTH, HEIGHT);
-		//now set color of remaining balls to BLUE
-		Color color = Color.BLUE;//color to pass in to Ball constructor
+		people[0] = new Person(Color.RED,WIDTH, HEIGHT);
 
 		for(int i = 1; i < people.length; i++)
 		{
 			if(i%25==0)
 			{
-				people[i] = new Ball(IMG_DIM, Color.YELLOW,WIDTH, HEIGHT);
+				people[i] = new Person(Color.YELLOW,WIDTH, HEIGHT);
 			}
 			else
 			{
-			people[i] = new Ball(IMG_DIM, color, WIDTH, HEIGHT);
+			people[i] = new Person(Color.BLUE, WIDTH, HEIGHT);
 			}
 		}//end for
 
@@ -78,8 +76,8 @@ public class Pandemic_Director extends JPanel
 		for(int i = 0; i < people.length; i++)
 		{
 			//get the color
-			g.setColor(people[i].getColor());
-			g.fillOval(people[i].getxCoord(), people[i].getyCoord(),  people[i].getDiameter(), people[i].getDiameter());
+			g.setColor(Color.BLUE);
+			g.fillOval(people[i].getxCoord(), people[i].getyCoord(), 10, 10);
 		}
 		//draw a circle shape
 
@@ -173,33 +171,33 @@ public class Pandemic_Director extends JPanel
 
 	}//end inner class
 
-	public void calcPosition(Ball ball)
+	public void calcPosition(Person person)
 	{
 
 		//check if near boundary. If so, then apply negative operator to the relevant increment
 		//Changed the operators to >= and <= from == to fix the "disappearing ball" problem
-		if(ball.getxCoord() >= WIDTH - ball.getDiameter() )
+		if(person.getxCoord() >= WIDTH - 10 )
 		{
 			//we are at right side, so change xIncrement to a negative
-			ball.setxIncrement(ball.getxIncrement() * -1);
+			person.setxIncrement(person.getxIncrement() * -1);
 		}
-		if(ball.getxCoord() <= 0)//changed operator to <=
+		if(person.getxCoord() <= 0)//changed operator to <=
 		{
 			//if true, we're at left edge, flip the flag
-			ball.setxIncrement(ball.getxIncrement() * -1);;
+			person.setxIncrement(person.getxIncrement() * -1);;
 		}
-		if(ball.getyCoord() >= HEIGHT - ball.getDiameter() )
+		if(person.getyCoord() >= HEIGHT - 10 )
 		{
-			ball.setyIncrement(ball.getyIncrement() * -1);
+			person.setyIncrement(person.getyIncrement() * -1);
 		}
-		if(ball.getyCoord() <= 0)
+		if(person.getyCoord() <= 0)
 		{
 			//if true, we're at left edge, flip the flag
-			ball.setyIncrement(ball.getyIncrement() * -1);;
+			person.setyIncrement(person.getyIncrement() * -1);;
 		}
-		//adjust the ball positions using the getters and setters
-		ball.setxCoord(ball.getxCoord() + ball.getxIncrement());
-		ball.setyCoord(ball.getyCoord() + ball.getyIncrement());
+		//adjust the person positions using the getters and setters
+		person.setxCoord(person.getxCoord() + person.getxIncrement());
+		person.setyCoord(person.getyCoord() + person.getyIncrement());
 
 
 	}//end calcPosition
