@@ -236,42 +236,67 @@ public class Pandemic_Director extends JPanel
 		}//end method
 
 	}//end inner class
-<<<<<<< HEAD
+//<<<<<<< HEAD
 
-	public void calcPosition(Person person)
-=======
+	public void calcPosition(Person person) {
+	//check if near boundary. If so, then apply negative operator to the relevant increment
+			//Changed the operators to >= and <= from == to fix the "disappearing ball" problem
+			if(person.getxCoord() >= WIDTH - 10 )
+			{
+				//we are at right side, so change xIncrement to a negative
+				person.setxIncrement(person.getxIncrement() * -1);
+			}
+			if(person.getxCoord() <= 0)//changed operator to <=
+			{
+				//if true, we're at left edge, flip the flag
+				person.setxIncrement(person.getxIncrement() * -1);;
+			}
+			if(person.getyCoord() >= HEIGHT - 10 )
+			{
+				person.setyIncrement(person.getyIncrement() * -1);
+			}
+			if(person.getyCoord() <= 0)
+			{
+				//if true, we're at left edge, flip the flag
+				person.setyIncrement(person.getyIncrement() * -1);;
+			}
+			//adjust the person positions using the getters and setters
+			person.setxCoord(person.getxCoord() + person.getxIncrement());
+			person.setyCoord(person.getyCoord() + person.getyIncrement());
+	}
+//=======
 	
-	public void calcPosition(Ball ball)
->>>>>>> 55c38c35a5b7fa2bb2d1d4296b79f3762710e8a2
-	{
-
-		//check if near boundary. If so, then apply negative operator to the relevant increment
-		//Changed the operators to >= and <= from == to fix the "disappearing ball" problem
-		if(person.getxCoord() >= WIDTH - 10 )
-		{
-			//we are at right side, so change xIncrement to a negative
-			person.setxIncrement(person.getxIncrement() * -1);
-		}
-		if(person.getxCoord() <= 0)//changed operator to <=
-		{
-			//if true, we're at left edge, flip the flag
-			person.setxIncrement(person.getxIncrement() * -1);;
-		}
-		if(person.getyCoord() >= HEIGHT - 10 )
-		{
-			person.setyIncrement(person.getyIncrement() * -1);
-		}
-		if(person.getyCoord() <= 0)
-		{
-			//if true, we're at left edge, flip the flag
-			person.setyIncrement(person.getyIncrement() * -1);;
-		}
-		//adjust the person positions using the getters and setters
-		person.setxCoord(person.getxCoord() + person.getxIncrement());
-		person.setyCoord(person.getyCoord() + person.getyIncrement());
-
-
-	}//end calcPosition
+//	public void calcPosition(Ball ball)
+////>>>>>>> 55c38c35a5b7fa2bb2d1d4296b79f3762710e8a2
+//	{
+//
+//		//check if near boundary. If so, then apply negative operator to the relevant increment
+//		//Changed the operators to >= and <= from == to fix the "disappearing ball" problem
+//		if(person.getxCoord() >= WIDTH - 10 )
+//		{
+//			//we are at right side, so change xIncrement to a negative
+//			person.setxIncrement(person.getxIncrement() * -1);
+//		}
+//		if(person.getxCoord() <= 0)//changed operator to <=
+//		{
+//			//if true, we're at left edge, flip the flag
+//			person.setxIncrement(person.getxIncrement() * -1);;
+//		}
+//		if(person.getyCoord() >= HEIGHT - 10 )
+//		{
+//			person.setyIncrement(person.getyIncrement() * -1);
+//		}
+//		if(person.getyCoord() <= 0)
+//		{
+//			//if true, we're at left edge, flip the flag
+//			person.setyIncrement(person.getyIncrement() * -1);;
+//		}
+//		//adjust the person positions using the getters and setters
+//		person.setxCoord(person.getxCoord() + person.getxIncrement());
+//		person.setyCoord(person.getyCoord() + person.getyIncrement());
+//
+//
+//	}//end calcPosition
 
 	public static void main(String[] args)
 	{
