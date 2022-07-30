@@ -29,6 +29,13 @@ public class Person {
 		isAlive = true;
 	}
 	
+	public Person(int x, int y, Color c) {
+		isAlive = true;	
+		xCoordinate = x;
+		yCoordinate = y;
+		statusColour = c;
+	}
+	
 	public void xIncrement(int i) {
 		// value of i in range -5 to +5
 		xCoordinate += i;
