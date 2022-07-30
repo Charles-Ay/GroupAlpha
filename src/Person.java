@@ -14,6 +14,9 @@ public class Person {
 	int xCoordinate;
 	int yCoordinate;
 	
+	int xIncrement;
+	int yIncrement;
+	
 	// will hold the current statusColor of the person
 	Color statusColour; // statusCode?
 		// no immunity = blue
@@ -29,11 +32,56 @@ public class Person {
 		isAlive = true;
 	}
 	
-	public Person(int x, int y, Color c) {
+	public Person(int widthValue, int heightValue, Color c) {
 		isAlive = true;	
-		xCoordinate = x;
-		yCoordinate = y;
 		statusColour = c;
+		
+		boolean loopflag = true;
+		int randomX, randomY;
+		
+		while(loopflag)
+		{
+			//generate a random value using widthValue
+			randomX = (int)(Math.random() * widthValue);
+			if(randomX >= 0 && randomX <= widthValue)
+			{
+				//we have a valid x value, assign it to xCoord
+				this.xCoordinate = randomX;
+				//System.out.println("STUB:Valid random xCoord value of " + randomX);
+				loopflag = false;
+			}
+		}//end while
+		loopflag = true;
+		
+		while(loopflag)
+		{
+			//repeat for yCoord
+			randomY = (int)(Math.random() * heightValue);
+			if(randomY >= 0 && randomY <= heightValue)
+			{
+				//we have a valid y value, assign it to yCoord
+				this.yCoordinate = randomY;
+				//System.out.println("STUB:Valid random yCoord value of " + randomY);
+			  loopflag = false;
+			}
+		}//end while
+		loopflag = true;
+		
+		while(loopflag)
+		{
+			this.xIncrement = (int)(Math.random()*12 - 6);//note: this only goes to +4...adjust this to get +5
+			this.yIncrement = (int)(Math.random()*12 - 6);		
+			if(this.xIncrement ==0 && this.xIncrement ==0)
+			{
+			  //run it again
+				this.xIncrement = (int)(Math.random()*12 - 6);
+				this.yIncrement = (int)(Math.random()*12 - 6);
+			}
+			else
+			{
+				loopflag = false;
+			}
+		}//end loop
 	}
 	
 	public void xIncrement(int i) {
