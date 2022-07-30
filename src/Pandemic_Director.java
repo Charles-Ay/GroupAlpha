@@ -5,7 +5,10 @@ import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.EventListener;
 
+import javax.swing.Action;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -25,6 +28,13 @@ public class Pandemic_Director extends JPanel
 	//REVSION NEEDED HERE: need to use the Ball class to create two Ball objects
 	// with different starting locations
 	//private int x, y, offsetX, offsetY; //used to position ball on JPanel
+
+	// will be used to track percentages of the population
+	int population;
+	double unvaccinated;
+	double firstShot;
+	double secondShot;
+	double thirdShot;
 
 	//constructor
 	public Pandemic_Director()
@@ -95,7 +105,7 @@ public class Pandemic_Director extends JPanel
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
-			
+
 			for(int i = 0; i < people.length; i++)
 			{
 				calcPosition(people[i]);
@@ -173,6 +183,47 @@ public class Pandemic_Director extends JPanel
 
 	}//end inner class
 
+	class Pandemic_Options_Pane extends JPanel{
+    	// will hold values of the siumulation
+    	int population;
+		double unvaccinated;
+		double firstShot;
+		double secondShot;
+		double thirdShot;
+
+		// will fuction as the interface between the user and the simulation
+
+		JButton start;
+		JButton stop;
+
+		public Pandemic_Options_Pane(){
+
+			// add buttons
+			this.setLayout(new FlowLayout());
+			this.setPreferredSize(new Dimension(WIDTH, HEIGHT) );
+			this.setBackground(Color.WHITE);
+
+			start = new JButton("Start");
+			stop = new JButton("Stop");
+
+			stop.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e){
+					time.stop();
+				}
+			});
+
+			start.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e){
+					time.start();
+				}
+			});
+			this.add(start);
+			this.add(stop);
+		}
+	}
+
 	public void calcPosition(Ball ball)
 	{
 
@@ -207,7 +258,7 @@ public class Pandemic_Director extends JPanel
 	public static void main(String[] args)
 	{
 		// create a JFrame to hold the JPanel
-		JFrame frame = new JFrame("Just Follow the Bouncing Ball");
+		JFrame frame = new JFrame("Pandemic Simulator");
 
 		//boilerplate
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
