@@ -35,6 +35,8 @@ public class Pandemic_Director extends JPanel
 	double firstShot;
 	double secondShot;
 	double thirdShot;
+	
+	JPanel simulation;
 
 	//constructor
 	public Pandemic_Director()
@@ -60,17 +62,7 @@ public class Pandemic_Director extends JPanel
 		}//end for
 
 		//set preferred size of panel using an ANONYMOUS Dimension object
-		this.setPreferredSize(new Dimension(WIDTH, HEIGHT) );
-		this.setBackground(Color.WHITE);
-
-		//start the timer so that it starts creating ActionEvent baby objects.
-		this.time.start();
-
-
-	}//end constructor
-
-	public JPanel buildOptionsPane() {
-
+		
 		JPanel Pandemic_Options_Pane = new JPanel();
 		
 		JButton start = new JButton("Start");
@@ -93,9 +85,46 @@ public class Pandemic_Director extends JPanel
 		Pandemic_Options_Pane.add(start);
 		Pandemic_Options_Pane.add(stop);
 		
-		return Pandemic_Options_Pane;
-	}
-	
+		this.add(Pandemic_Options_Pane);
+		
+		this.setLayout(new FlowLayout());
+		simulation = new JPanel() {
+			public void paintComponent(Graphics g)//The Graphics object 'g' is your paint brush
+			{
+				//call super version of this method to "throw the bucket of paint onto the canvas"
+				// and cover up any previous image.
+				//NOTE: try commenting this out to see the effect of not repainting.
+				super.paintComponent(g);
+
+				//set brush color
+				g.setColor(Color.PINK);
+				//REIVSISION HERE: need to access the Ball object's state values in the call to
+				// fillOval
+				//REVISION JULY 15: iterate through the loop to paint the balls onto the panel
+				// and set the color using the Ball object's color value
+				for(int i = 0; i < people.length; i++)
+				{
+					//get the color
+					g.setColor(people[i].getColor());
+					g.fillOval(people[i].getxCoord(), people[i].getyCoord(),  people[i].getDiameter(), people[i].getDiameter());
+				}
+				//draw a circle shape
+			}//end paintComponent over-ride
+			
+		};
+		simulation.setPreferredSize(new Dimension(WIDTH, HEIGHT) );
+		simulation.setBackground(Color.WHITE);
+		
+		this.add(simulation);
+		
+		//this.setPreferredSize(new Dimension(WIDTH, HEIGHT) );
+		//this.setBackground(Color.WHITE);
+
+		//start the timer so that it starts creating ActionEvent baby objects.
+		this.time.start();
+		
+	}//end constructor
+	/*
 	//OVER-RIDE the JPanel's paintComponent() method
 	public void paintComponent(Graphics g)//The Graphics object 'g' is your paint brush
 	{
@@ -120,7 +149,7 @@ public class Pandemic_Director extends JPanel
 
 
 	}//end paintComponent over-ride
-
+*/
 
 	//INNER CLASS GOES HERE
 
@@ -248,7 +277,7 @@ public class Pandemic_Director extends JPanel
 	{
 		// create a JFrame to hold the JPanel
 		JFrame frame = new JFrame("Pandemic Simulator");
-
+		
 		//boilerplate
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLayout(new FlowLayout() );//ANONYMOUS object
@@ -260,10 +289,11 @@ public class Pandemic_Director extends JPanel
 
 		//create an ANONYMOUS object of the class and add the JPanel to the JFrame
 		frame.add(new Pandemic_Director() );
+		
+		//frame.add(buildOptionsPane());
 		frame.pack();//shrinks the JFrame to the smallest size possible to conserve
 		             //screen real estate. Comment it out to see its effect
 		frame.setVisible(true);
 
 	}//end main
-
 }//end class}
