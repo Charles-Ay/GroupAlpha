@@ -67,9 +67,19 @@ public class Person {
 		}//end while
 		loopflag = true;
 		
+		this.changeIncrement();
+	}
+	
+	public void increment() {
+		this.xCoordinate += this.xIncrement;
+		this.yCoordinate += this.yIncrement;
+	}
+	
+	public void changeIncrement() {
+		boolean loopflag = true;
 		while(loopflag)
 		{
-			this.xIncrement = (int)(Math.random()*12 - 6);//note: this only goes to +4...adjust this to get +5
+			this.xIncrement = (int)(Math.random()*12 - 6);
 			this.yIncrement = (int)(Math.random()*12 - 6);		
 			if(this.xIncrement ==0 && this.xIncrement ==0)
 			{
@@ -84,13 +94,13 @@ public class Person {
 		}//end loop
 	}
 	
-	public void xIncrement(int i) {
-		// value of i in range -5 to +5
-		xCoordinate += i;
-	}
-	
-	public void yIncrement(int i) {
-		// value of i in range -5 to +5
-		xCoordinate += i;
-	}
+//	public void xIncrement(int i) {
+//		// value of i in range -5 to +5
+//		xCoordinate += i;
+//	}
+//	
+//	public void yIncrement(int i) {
+//		// value of i in range -5 to +5
+//		xCoordinate += i;
+//	}
 }
