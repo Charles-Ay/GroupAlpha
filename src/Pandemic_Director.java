@@ -95,28 +95,11 @@ public class Pandemic_Director extends JPanel
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
-			// on each Timer event (every 20 milliseconds) re-calculate the co-ordinates
-			// of where the ball shape will be drawn next.
-
-			//Simplified code...Now we just call calcPosition() for each ball object, which
-			//will update their positions.
-
-			//REVISION JULY 14: put this in a loop to call calcPosition() on each ball in the array
+			
 			for(int i = 0; i < people.length; i++)
 			{
 				calcPosition(people[i]);
 			}
-
-			//NEXT STEP for version 4: use a nested for loop to check for collisions. Eventually, put this code into its own method.
-			//It could return a boolean true if a collision occurs and xIncrement and yIncrement values
-			// will be flipped from positive to negative or negative to positive, depending on their
-			//current state.
-
-			//Proximity detection:
-			//calculate the difference in the x and y cords ( deltaX and deltaY ) for EACH PAIR OF BALLS IN THE ARRAY.
-			//Start with the first ball and compare it against every other ball in the array. Then do the second ball and check it against
-			// the remaining balls in the array, and continue until every pair of balls has been checked for proximity.
-			//For this we need a NESTED FOR LOOP
 
 			int deltaX;//difference in pixels of the x coordinates of the two balls being compared.
 			int deltaY;//difference in pixels of the y coordinates of the two balls being compared.
