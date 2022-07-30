@@ -5,7 +5,10 @@ import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.EventListener;
 
+import javax.swing.Action;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -25,6 +28,13 @@ public class Pandemic_Director extends JPanel
 	//REVSION NEEDED HERE: need to use the Ball class to create two Ball objects
 	// with different starting locations
 	//private int x, y, offsetX, offsetY; //used to position ball on JPanel
+
+	// will be used to track percentages of the population
+	int population;
+	double unvaccinated;
+	double firstShot;
+	double secondShot;
+	double thirdShot;
 
 	//constructor
 	public Pandemic_Director()
@@ -59,6 +69,33 @@ public class Pandemic_Director extends JPanel
 
 	}//end constructor
 
+	public JPanel buildOptionsPane() {
+
+		JPanel Pandemic_Options_Pane = new JPanel();
+		
+		JButton start = new JButton("Start");
+		JButton stop = new JButton("Stop");
+
+		stop.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e){
+				time.stop();
+			}
+		});
+
+		start.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e){
+				time.start();
+			}
+		});
+		
+		Pandemic_Options_Pane.add(start);
+		Pandemic_Options_Pane.add(stop);
+		
+		return Pandemic_Options_Pane;
+	}
+	
 	//OVER-RIDE the JPanel's paintComponent() method
 	public void paintComponent(Graphics g)//The Graphics object 'g' is your paint brush
 	{
@@ -93,38 +130,38 @@ public class Pandemic_Director extends JPanel
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
-			
+
 			for(int i = 0; i < people.length; i++)
 			{
 				calcPosition(people[i]);
 			}
 
-			int deltaX;//difference in pixels of the x coordinates of the two balls being compared.
-			int deltaY;//difference in pixels of the y coordinates of the two balls being compared.
+			int deltaX;//difference in pixels of the x coordinates of the two Persons being compared.
+			int deltaY;//difference in pixels of the y coordinates of the two Persons being compared.
 
-			//temp variables to hold the x and y coords of both balls in the pair.
-			//The balls will be referred to as firstBall and secondBall
-			int firstBallX,  firstBallY, secondBallX, secondBallY;
+			//temp variables to hold the x and y coords of both Persons in the pair.
+			//The Persons will be referred to as firstPerson and secondPerson
+			int firstPersonX,  firstPersonY, secondPersonX, secondPersonY;
 
-			//outer loop gets the firstBall of the pair and its coordinates.
+			//outer loop gets the firstPerson of the pair and its coordinates.
 			for(int i = 0; i < people.length -1; i++)//LCC to length-1 to avoid out of bounds
 			{
-				//get the x and y co-ords of  first ball of the pair
-				firstBallX = people[i].getxCoord();
-				firstBallY = people[i].getyCoord();
+				//get the x and y co-ords of  first Person of the pair
+				firstPersonX = people[i].getxCoord();
+				firstPersonY = people[i].getyCoord();
 
-				//Inner loop gets the second ball of the pair
-				//start inner loop counter at i+1 so we don't compare the first ball to itself.
+				//Inner loop gets the second Person of the pair
+				//start inner loop counter at i+1 so we don't compare the first Person to itself.
 				for(int j = i+1; j < people.length; j++)
 				{
-					secondBallX = people[j].getxCoord();
-					secondBallY = people[j].getyCoord();
+					secondPersonX = people[j].getxCoord();
+					secondPersonY = people[j].getyCoord();
 
-					//now calculate deltaX and deltaY for the pair of balls
-					deltaX = firstBallX - secondBallX;
-					deltaY = firstBallY - secondBallY;
+					//now calculate deltaX and deltaY for the pair of Persons
+					deltaX = firstPersonX - secondPersonX;
+					deltaY = firstPersonY - secondPersonY;
 					//square them to get rid of negative values, then add them and take square root of total
-					// and compare it to ball diameter held in IMG_DIM
+					// and compare it to Person diameter held in IMG_DIM
 					if(Math.sqrt(deltaX *deltaX + deltaY * deltaY) <= IMG_DIM)//if true, they have touched
 					{
 						//REVSION HERE: not using the xFlag and yFlag anymore, so now we  adjust
@@ -132,32 +169,32 @@ public class Pandemic_Director extends JPanel
 						people[i].setxIncrement(people[i].getxIncrement() * -1);
 						people[i].setyIncrement(people[i].getyIncrement() * -1);
 
-						//now do the secondBall
+						//now do the secondPerson
 						people[j].setxIncrement(people[j].getxIncrement() * -1);
 						people[j].setyIncrement(people[j].getyIncrement() * -1);
 
 						//ALSO, to get a bit of directional change generate a new set of random values for the xIncrement
-						//  and yIncrement of each ball involved in the collision and assign them.
-						int firstBallnewxIncrement = (int)(Math.random()*11 - 5);
-						int firstBallnewyIncrement = (int)(Math.random()*11 - 5);
-						int secondBallnewxIncrement = (int)(Math.random()*11 - 5);
-						int secondBallnewyIncrement = (int)(Math.random()*11 - 5);
+						//  and yIncrement of each Person involved in the collision and assign them.
+						int firstPersonnewxIncrement = (int)(Math.random()*11 - 5);
+						int firstPersonnewyIncrement = (int)(Math.random()*11 - 5);
+						int secondPersonnewxIncrement = (int)(Math.random()*11 - 5);
+						int secondPersonnewyIncrement = (int)(Math.random()*11 - 5);
 
-						//this will prevent balls from "getting stuck" on the borders.
-						people[i].setxIncrement(firstBallnewxIncrement);
-						people[i].setyIncrement(firstBallnewyIncrement);
-						people[j].setxIncrement(secondBallnewxIncrement);
-						people[j].setyIncrement(secondBallnewyIncrement);
+						//this will prevent Persons from "getting stuck" on the borders.
+						people[i].setxIncrement(firstPersonnewxIncrement);
+						people[i].setyIncrement(firstPersonnewyIncrement);
+						people[j].setxIncrement(secondPersonnewxIncrement);
+						people[j].setyIncrement(secondPersonnewyIncrement);
 
-						//IN VERSION FIVE change the color of a blue ball to red.
+						//IN VERSION FIVE change the color of a blue Person to red.
 						if(people[i].getColor().equals(Color.RED) && people[j].getColor().equals(Color.BLUE))
 						{
-							//change second ball to color of first ball
+							//change second Person to color of first Person
 							people[j].setColor(people[i].getColor());
 						}
 						if(people[j].getColor().equals(Color.RED) && people[i].getColor().equals(Color.BLUE))
 						{
-							//second ball is red, so change first ball to color of second ball
+							//second Person is red, so change first Person to color of second Person
 							people[i].setColor(people[j].getColor());;
 						}
 					}//end if
@@ -170,8 +207,13 @@ public class Pandemic_Director extends JPanel
 		}//end method
 
 	}//end inner class
+<<<<<<< HEAD
 
 	public void calcPosition(Person person)
+=======
+	
+	public void calcPosition(Ball ball)
+>>>>>>> 55c38c35a5b7fa2bb2d1d4296b79f3762710e8a2
 	{
 
 		//check if near boundary. If so, then apply negative operator to the relevant increment
@@ -205,7 +247,7 @@ public class Pandemic_Director extends JPanel
 	public static void main(String[] args)
 	{
 		// create a JFrame to hold the JPanel
-		JFrame frame = new JFrame("Just Follow the Bouncing Ball");
+		JFrame frame = new JFrame("Pandemic Simulator");
 
 		//boilerplate
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
