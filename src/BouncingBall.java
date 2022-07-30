@@ -10,7 +10,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-public class Bouncing_Ball_V5 extends JPanel
+public class BouncingBall extends JPanel
 {
 	//CLASS WIDE SCOPE AREA
 	private final int WIDTH = 800, HEIGHT = 700;//size of JPanel
@@ -27,7 +27,7 @@ public class Bouncing_Ball_V5 extends JPanel
 	//private int x, y, offsetX, offsetY; //used to position ball on JPanel
 	
 	//constructor
-	public Bouncing_Ball_V5()
+	public BouncingBall()
 	{
 		//create Timer and register a listener for it.
 		this.time = new Timer(LAG_TIME, new BounceListener() );
@@ -305,7 +305,7 @@ public class Bouncing_Ball_V5 extends JPanel
 		frame.getContentPane().setBackground(Color.BLUE);
 		
 		//create an ANONYMOUS object of the class and add the JPanel to the JFrame
-		frame.add(new Bouncing_Ball_V5() );
+		frame.add(new BouncingBall() );
 		
 		frame.pack();//shrinks the JFrame to the smallest size possible to conserve
 		             //screen real estate. Comment it out to see its effect
