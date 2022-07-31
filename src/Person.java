@@ -1,15 +1,18 @@
 import java.awt.Color;
+import java.util.Random;
 
 /**
  * @author Maximus Slabon
  *
  */
 public class Person {
+	Random rand = new Random();
 	
-	boolean isAlive;
-	boolean isInfected;
-	int immunityStatus;
-
+	// will be true if the person had the virus before
+	private boolean healthy = true;
+	// will be true if the person has natural immunity
+	private boolean naturalImmunity = true;
+	
 	// will hold this persons location on screen
 	int xCoordinate;
 	int yCoordinate;
@@ -19,56 +22,51 @@ public class Person {
 	int cycleCounter = 0;
 	
 	// will hold the current statusColor of the person
-	Color statusColour; // statusCode?
-		// no immunity = blue
-		// one shot immunity = cyan
-		// two shot immunity = yellow
-		// three shot immunity = magenta
-		// infected that recovered = green
-		// infected = red
-		// dead = black
-		
-	// default constructor for person class
-	public Person() {
-		isAlive = true;
+	private Color statusColor; // statusCode?
+	public Color getStatusColor() {return statusColor;}
+	
+	// will hold the health status of the person
+	private Health healthStatus;
+	public Health getHealthStatus() {return healthStatus;}
+	public enum Health{
+		INFECTED,
+		INFECTED_RECOVERD,
+		DEAD
 	}
 	
-	public Person(Color c, int widthValue, int heightValue) {
-		isAlive = true;	
-		statusColour = c;
-		
-		boolean loopflag = true;
-		int randomX, randomY;
-		
-		while(loopflag)
-		{
-			//generate a random value using widthValue
-			randomX = (int)(Math.random() * widthValue);
-			if(randomX >= 0 && randomX <= widthValue)
-			{
-				//we have a valid x value, assign it to xCoord
-				this.xCoordinate = randomX;
-				//System.out.println("STUB:Valid random xCoord value of " + randomX);
-				loopflag = false;
-			}
-		}//end while
-		loopflag = true;
-		
-		while(loopflag)
-		{
-			//repeat for yCoord
-			randomY = (int)(Math.random() * heightValue);
-			if(randomY >= 0 && randomY <= heightValue)
-			{
-				//we have a valid y value, assign it to yCoord
-				this.yCoordinate = randomY;
-				//System.out.println("STUB:Valid random yCoord value of " + randomY);
-			  loopflag = false;
-			}
-		}//end while
-		loopflag = true;
-		
-		this.changeIncrement();
+	// will hold the immunity of the person
+	private Immunity immunity;
+	public Immunity getImmunity() {return immunity;}
+
+	public enum Immunity{
+		NO_IMMUNITY,
+		ONE_SHOT,
+		TWO_SHOT,
+		THREE_SHOT,
+	}
+	
+	public Person(Health health, Immunity immunity) {
+		this(health, immunity, false);
+	}
+	
+	public Person(Health health, Immunity immunity, boolean naturalImmunity) {
+		this.healthStatus = health;
+		this.immunity = immunity;
+		this.naturalImmunity = naturalImmunity;
+		this.updateStatusColor();
+	}
+	
+	public Person(Health health, Immunity immunity, int x, int y) {
+		this(health, immunity, x, y, false);
+	}
+	
+	public Person(Health health, Immunity immunity, int x, int y, boolean naturalImmunity) {
+		this.healthStatus = health;
+		this.immunity = immunity;
+		this.xCoordinate = x;
+		this.yCoordinate = y;
+		this.naturalImmunity = naturalImmunity;
+		this.updateStatusColor();
 	}
 	
 	public void increment() {
@@ -95,81 +93,106 @@ public class Person {
 		}//end loop
 	}
 	
-	public void setDead() {
-		this.isAlive = false;
-		//colour black
-		this.xIncrement = 0;
-		this.yIncrement = 0;
+	private void updateStatusColor() {
+		switch(immunity) {
+			case NO_IMMUNITY:
+				statusColor = Color.BLUE;
+				break;
+			case ONE_SHOT:
+				statusColor = Color.CYAN;
+				break;
+			case TWO_SHOT:
+				statusColor = Color.YELLOW;
+				break;
+			case THREE_SHOT:
+				statusColor = Color.MAGENTA;
+				break;
+		}
 		
+		switch(healthStatus) {
+			case INFECTED:
+				statusColor = Color.RED;
+				break;
+			case INFECTED_RECOVERD:
+				naturalImmunity = true;
+				healthy = true;
+				statusColor = Color.GREEN;
+				break;
+			case DEAD:
+				statusColor = Color.BLACK;
+				break;
+		}
 	}
 	
-	
-	
-	
-	
-	//added temporarily
-	
-	public Color getColor()
-	{
-		return statusColour;
+	public void deathRNG() {
+		if(healthStatus != Health.DEAD) {
+			// Obtain a number between [1 - 100].
+			int n = rand.nextInt(100) + 1;
+			
+			
+			//mild immunity is one shot, nautalImmunity or recovered
+			if(healthStatus != Health.DEAD && ((immunity == Immunity.NO_IMMUNITY && naturalImmunity == true)||immunity == Immunity.ONE_SHOT))
+				if(n <= 3)healthStatus = Health.DEAD;
+			else {
+				switch(immunity) {
+					case NO_IMMUNITY:
+						if(n <= 10)healthStatus = Health.DEAD;
+						break;
+					case ONE_SHOT:
+						if(n <= 7)healthStatus = Health.DEAD;
+						break;
+					case TWO_SHOT:
+						if(n <= 3)healthStatus = Health.DEAD;
+						break;
+					case THREE_SHOT:
+						if(n == 1)healthStatus = Health.DEAD;
+						break;
+				}
+			}
+		}
+		this.updateStatusColor();
 	}
 
-	public void setColor(Color color)
-	{
-		this.statusColour = color;
+	public void infectionRNG(Person otherPerson) {
+		//Check if either person is infect but not both
+		//if(n <= 80)this.healthStatus = Health.INFECTED;
+		if((otherPerson.healthStatus == Health.INFECTED || this.healthStatus == Health.INFECTED) && (!otherPerson.healthy && !this.healthy)) {
+			// Obtain a number between [1 - 100].
+			int n = rand.nextInt(100) + 1;
+			
+			//other person is infected
+			if(otherPerson.healthStatus == Health.INFECTED && !this.healthy) {
+				if(this.immunity == Person.Immunity.NO_IMMUNITY) {
+					if(n <= 80)this.healthStatus = Health.INFECTED;
+				}
+				else if(this.immunity == Person.Immunity.ONE_SHOT || this.naturalImmunity) {
+					if(this.naturalImmunity)if(n <= 40)this.healthStatus = Health.INFECTED;
+					if(n <= 60)this.healthStatus = Health.INFECTED;
+				}
+				else if(this.immunity == Person.Immunity.TWO_SHOT) {
+					if(n <= 30)this.healthStatus = Health.INFECTED;
+				}
+				else if(this.immunity == Person.Immunity.TWO_SHOT) {
+					if(n <= 10)this.healthStatus = Health.INFECTED;
+				}
+			}
+			//this person is infected
+			else {
+				if(otherPerson.immunity == Person.Immunity.NO_IMMUNITY) {
+					if(n <= 80)otherPerson.healthStatus = Health.INFECTED;
+				}
+				else if(otherPerson.immunity == Person.Immunity.ONE_SHOT || otherPerson.naturalImmunity) {
+					if(otherPerson.naturalImmunity)if(n <= 40)otherPerson.healthStatus = Health.INFECTED;
+					if(n <= 60)otherPerson.healthStatus = Health.INFECTED;
+				}
+				else if(otherPerson.immunity == Person.Immunity.TWO_SHOT) {
+					if(n <= 30)otherPerson.healthStatus = Health.INFECTED;
+				}
+				else if(otherPerson.immunity == Person.Immunity.TWO_SHOT) {
+					if(n <= 10)otherPerson.healthStatus = Health.INFECTED;
+				}
+			}
+			this.updateStatusColor();
+		}
 	}
-
-	//getters and setters
-	public int getxCoord()
-	{
-		return xCoordinate;
-	}
-	public int getyCoord()
-	{
-		return yCoordinate;
-	}
-//	public int getDiameter()
-//	{
-//		return diameter;
-//	}
-	
-	public void setxCoord(int xCoord)
-	{
-		this.xCoordinate = xCoord;
-	}
-
-	public void setyCoord(int yCoord)
-	{
-		this.yCoordinate = yCoord;
-	}
-  
-	public int getxIncrement()
-	{
-		return xIncrement;
-	}
-
-	public void setxIncrement(int xIncrement)
-	{
-		this.xIncrement = xIncrement;
-	}
-
-	public int getyIncrement()
-	{
-		return yIncrement;
-	}
-
-	public void setyIncrement(int yIncrement)
-	{
-		this.yIncrement = yIncrement;
-	}
-	
-//	public void xIncrement(int i) {
-//		// value of i in range -5 to +5
-//		xCoordinate += i;
-//	}
-//	
-//	public void yIncrement(int i) {
-//		// value of i in range -5 to +5
-//		xCoordinate += i;
-//	}
 }
