@@ -29,6 +29,7 @@ public class Person {
 	private Health healthStatus;
 	public Health getHealthStatus() {return healthStatus;}
 	public enum Health{
+		UNINFECTED,
 		INFECTED,
 		INFECTED_RECOVERD,
 		DEAD
@@ -41,8 +42,8 @@ public class Person {
 	public enum Immunity{
 		NO_IMMUNITY,
 		ONE_SHOT,
-		TWO_SHOT,
-		THREE_SHOT,
+		TWO_SHOTS,
+		THREE_SHOTS,
 	}
 	
 	public Person(Health health, Immunity immunity) {
@@ -54,6 +55,7 @@ public class Person {
 		this.immunity = immunity;
 		this.naturalImmunity = naturalImmunity;
 		this.updateStatusColor();
+		this.changeIncrement();
 	}
 	
 	public Person(Health health, Immunity immunity, int x, int y) {
@@ -67,6 +69,7 @@ public class Person {
 		this.yCoordinate = y;
 		this.naturalImmunity = naturalImmunity;
 		this.updateStatusColor();
+		this.changeIncrement();
 	}
 	
 	public void increment() {
@@ -101,10 +104,10 @@ public class Person {
 			case ONE_SHOT:
 				statusColor = Color.CYAN;
 				break;
-			case TWO_SHOT:
+			case TWO_SHOTS:
 				statusColor = Color.YELLOW;
 				break;
-			case THREE_SHOT:
+			case THREE_SHOTS:
 				statusColor = Color.MAGENTA;
 				break;
 		}
@@ -141,10 +144,10 @@ public class Person {
 					case ONE_SHOT:
 						if(n <= 7)healthStatus = Health.DEAD;
 						break;
-					case TWO_SHOT:
+					case TWO_SHOTS:
 						if(n <= 3)healthStatus = Health.DEAD;
 						break;
-					case THREE_SHOT:
+					case THREE_SHOTS:
 						if(n == 1)healthStatus = Health.DEAD;
 						break;
 				}
@@ -169,10 +172,10 @@ public class Person {
 					if(this.naturalImmunity)if(n <= 40)this.healthStatus = Health.INFECTED;
 					if(n <= 60)this.healthStatus = Health.INFECTED;
 				}
-				else if(this.immunity == Person.Immunity.TWO_SHOT) {
+				else if(this.immunity == Person.Immunity.TWO_SHOTS) {
 					if(n <= 30)this.healthStatus = Health.INFECTED;
 				}
-				else if(this.immunity == Person.Immunity.TWO_SHOT) {
+				else if(this.immunity == Person.Immunity.TWO_SHOTS) {
 					if(n <= 10)this.healthStatus = Health.INFECTED;
 				}
 			}
@@ -185,14 +188,69 @@ public class Person {
 					if(otherPerson.naturalImmunity)if(n <= 40)otherPerson.healthStatus = Health.INFECTED;
 					if(n <= 60)otherPerson.healthStatus = Health.INFECTED;
 				}
-				else if(otherPerson.immunity == Person.Immunity.TWO_SHOT) {
+				else if(otherPerson.immunity == Person.Immunity.TWO_SHOTS) {
 					if(n <= 30)otherPerson.healthStatus = Health.INFECTED;
 				}
-				else if(otherPerson.immunity == Person.Immunity.TWO_SHOT) {
+				else if(otherPerson.immunity == Person.Immunity.TWO_SHOTS) {
 					if(n <= 10)otherPerson.healthStatus = Health.INFECTED;
 				}
 			}
 			this.updateStatusColor();
 		}
+	}
+	
+	//temporary keep
+	public Color getColor()
+	{
+		return statusColor;
+	}
+
+	public void setColor(Color color)
+	{
+		this.statusColor = color;
+	}
+
+	//getters and setters
+	public int getxCoord()
+	{
+		return xCoordinate;
+	}
+	public int getyCoord()
+	{
+		return yCoordinate;
+	}
+//	public int getDiameter()
+//	{
+//		return diameter;
+//	}
+	
+	public void setxCoord(int xCoord)
+	{
+		this.xCoordinate = xCoord;
+	}
+
+	public void setyCoord(int yCoord)
+	{
+		this.yCoordinate = yCoord;
+	}
+  
+	public int getxIncrement()
+	{
+		return xIncrement;
+	}
+
+	public void setxIncrement(int xIncrement)
+	{
+		this.xIncrement = xIncrement;
+	}
+
+	public int getyIncrement()
+	{
+		return yIncrement;
+	}
+
+	public void setyIncrement(int yIncrement)
+	{
+		this.yIncrement = yIncrement;
 	}
 }

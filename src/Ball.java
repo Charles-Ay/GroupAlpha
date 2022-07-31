@@ -138,19 +138,21 @@ public class Ball
 		boolean loopFlag = true;
 		while(loopFlag)
 		{
-			this.xIncrement = (int)(Math.random()*11 - 5);
-			this.yIncrement = (int)(Math.random()*11 - 5);		
-			if(this.xIncrement ==0 && this.xIncrement ==0)
+			this.xIncrement = (int)(Math.random()*12 - 6);
+			this.yIncrement = (int)(Math.random()*12 - 6);		
+			if(this.xIncrement ==0 && this.yIncrement ==0)
 			{
 			  //run it again
-				this.xIncrement = (int)(Math.random()*11 - 5);
-				this.yIncrement = (int)(Math.random()*11 - 5);
+				this.xIncrement = (int)(Math.random()*12 - 6);
+				this.yIncrement = (int)(Math.random()*12 - 6);
 			}
 			else
 			{
 				loopFlag = false;
 			}
 		}//end loop
+		System.out.print(this.xIncrement + "\n");
+		System.out.print(this.yIncrement + "\n");
 						
 	}//end random constructor
 	

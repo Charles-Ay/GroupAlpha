@@ -13,16 +13,19 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+//import Person.Health;
+//import Person.Immunity;
+
 public class Pandemic_Director extends JPanel
 {
 	//CLASS WIDE SCOPE AREA
-	private final int WIDTH = 800, HEIGHT = 700;//size of JPanel
+	private final int WIDTH = 800, HEIGHT = 700;//make size of screen
 	private final int LAG_TIME = 50; // 250 time in milliseconds between re-paints of screen
 	private Timer time;//Timer class object that will fire events every LAG_TIME interval
-	private final int IMG_DIM =10; //size of ball to be drawn
+	private final int IMG_DIM = 10; //size of ball to be drawn
 
 	//REVISION July 14 : create an array of Ball objects here in class scope
-	private final int ARRAY_SIZE = 500;//default to 500
+	private final int ARRAY_SIZE = 500; //get input
 	private Person [] people = new Person[ARRAY_SIZE];
 
 	//REVSION NEEDED HERE: need to use the Ball class to create two Ball objects
@@ -43,23 +46,42 @@ public class Pandemic_Director extends JPanel
 	{
 		//create Timer and register a listener for it.
 		this.time = new Timer(LAG_TIME, new BounceListener() );
+		
+		//template for making new people
+		//use the ARRAY_SIZE and percentages gathered from input to calculate amount of people in each category
+		//create amount of people using "cutoff" that is (ARRAY_SIZE/percentage + last cutoff value)
+		int tempPercentage = 15;
+		int tempCutoffInt = ARRAY_SIZE * (tempPercentage / 100);
+		
+		for (int i = 0; i < people.length; i++) {
+			if (i <= tempCutoffInt) {
+				people[i] = new Person(Person.Health.UNINFECTED, Person.Immunity.NO_IMMUNITY);
+			}
+			else if (i <= tempCutoffInt) {
+				people[i] = new Person(Person.Health.INFECTED, Person.Immunity.NO_IMMUNITY);
+			}
+			else {
+				people[i] = new Person(Person.Health.DEAD, Person.Immunity.THREE_SHOTS);
+			}
+			//etc.
+		}
 
 		//REVISION JULY 15
 		//use a loop to populate the people with balls with random positions
 		//Set the color of the first ball to RED
-		people[0] = new Person(Color.RED,WIDTH, HEIGHT);
-
-		for(int i = 1; i < people.length; i++)
-		{
-			if(i%25==0)
-			{
-				people[i] = new Person(Color.YELLOW,WIDTH, HEIGHT);
-			}
-			else
-			{
-			people[i] = new Person(Color.BLUE, WIDTH, HEIGHT);
-			}
-		}//end for
+//		people[0] = new Person(Color.RED,WIDTH, HEIGHT);
+//
+//		for(int i = 1; i < people.length; i++)
+//		{
+//			if(i%25==0)
+//			{
+//				people[i] = new Person(Color.YELLOW,WIDTH, HEIGHT);
+//			}
+//			else
+//			{
+//			people[i] = new Person(Color.BLUE, WIDTH, HEIGHT);
+//			}
+//		}//end for
 
 		//set preferred size of panel using an ANONYMOUS Dimension object
 		
@@ -106,7 +128,7 @@ public class Pandemic_Director extends JPanel
 				{
 					//get the color
 					g.setColor(people[i].getColor());
-					g.fillOval(people[i].getxCoord(), people[i].getyCoord(),  people[i].getDiameter(), people[i].getDiameter());
+					g.fillOval(people[i].getxCoord(), people[i].getyCoord(), IMG_DIM, IMG_DIM);
 				}
 				//draw a circle shape
 			}//end paintComponent over-ride
@@ -239,6 +261,13 @@ public class Pandemic_Director extends JPanel
 //<<<<<<< HEAD
 
 	public void calcPosition(Person person) {
+		//checks if dead
+		if (person.getHealthStatus() == Person.Health.DEAD) {
+			person.setxIncrement(0);
+			person.setyIncrement(0);
+			return;
+		}
+		
 	//check if near boundary. If so, then apply negative operator to the relevant increment
 			//Changed the operators to >= and <= from == to fix the "disappearing ball" problem
 			if(person.getxCoord() >= WIDTH - 10 )
