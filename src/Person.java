@@ -115,6 +115,7 @@ public class Person {
 		switch(healthStatus) {
 			case INFECTED:
 				statusColor = Color.RED;
+				healthy = false;
 				break;
 			case INFECTED_RECOVERD:
 				naturalImmunity = true;
