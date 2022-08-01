@@ -253,4 +253,84 @@ public class Person {
 	{
 		this.yIncrement = yIncrement;
 	}
+
+	public boolean isHealthy()
+	{
+		return healthy;
+	}
+
+	public void setHealthy(boolean healthy)
+	{
+		this.healthy = healthy;
+	}
+
+	public boolean isNaturalImmunity()
+	{
+		return naturalImmunity;
+	}
+
+	public void setNaturalImmunity(boolean naturalImmunity)
+	{
+		this.naturalImmunity = naturalImmunity;
+	}
+
+	public int getCycleCounter()
+	{
+		return cycleCounter;
+	}
+
+	public void setCycleCounter(int cycleCounter)
+	{
+		this.cycleCounter = cycleCounter;
+	}
+
+	public void setHealthStatus(Health healthStatus)
+	{
+		this.healthStatus = healthStatus;
+	}
+
+	public void setImmunity(Immunity immunity)
+	{
+		this.immunity = immunity;
+	}
+	
+	public boolean isHealthy()
+	{
+		return healthy;
+	}
+
+	public void setHealthy(boolean healthy)
+	{
+		this.healthy = healthy;
+	}
+
+	public boolean isNaturalImmunity()
+	{
+		return naturalImmunity;
+	}
+
+	public void setNaturalImmunity(boolean naturalImmunity)
+	{
+		this.naturalImmunity = naturalImmunity;
+	}
+
+	public int getCycleCounter()
+	{
+		return cycleCounter;
+	}
+
+	public void setCycleCounter(int cycleCounter)
+	{
+		this.cycleCounter = cycleCounter;
+	}
+
+	public void setHealthStatus(Health healthStatus)
+	{
+		this.healthStatus = healthStatus;
+	}
+
+	public void setImmunity(Immunity immunity)
+	{
+		this.immunity = immunity;
+	}
 }
