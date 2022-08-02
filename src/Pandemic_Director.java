@@ -1,3 +1,4 @@
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -46,7 +47,7 @@ public class Pandemic_Director extends JPanel
 	{
 		//create Timer and register a listener for it.
 		this.time = new Timer(LAG_TIME, new BounceListener() );
-		
+		this.setLayout(new BorderLayout());
 		//template for making new people
 		//use the ARRAY_SIZE and percentages gathered from input to calculate amount of people in each category
 		//create amount of people using "cutoff" that is (ARRAY_SIZE/percentage + last cutoff value)
@@ -85,31 +86,58 @@ public class Pandemic_Director extends JPanel
 
 		//set preferred size of panel using an ANONYMOUS Dimension object
 		
-		JPanel Pandemic_Options_Pane = new JPanel();
+		// options pane
+		JPanel pandemicOptionsPane = new JPanel();
 		
-		JButton start = new JButton("Start");
-		JButton stop = new JButton("Stop");
+		pandemicOptionsPane.setLayout(new BorderLayout());
+		
+			// will hold options for collecting user input for populations
+			JPanel populationOptions = new JPanel();
+			// grid layout?
+			populationOptions.setLayout(new BorderLayout());
+		
+			// will hold buttons for starting, stopping and restarting simulation
+			JPanel buttonsPane = new JPanel();
+			
+			// flow layout
+			
+			JButton start = new JButton("Start");
+			JButton stop = new JButton("Stop");
+			JButton restart = new JButton("Restart");
+			
+			stop.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e){
+					time.stop();
+				}
+			});
 
-		stop.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e){
-				time.stop();
-			}
-		});
+			start.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e){
+					time.start();
+				}
+			});
+			
+			restart.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e){
+					// regenerate/respawn people
+					// based on user input
+					time.restart();
+				}
+			});
+			
+			buttonsPane.add(start);
+			buttonsPane.add(stop);
+			buttonsPane.add(restart);
+			
+			pandemicOptionsPane.add(buttonsPane);
+		
+		this.add(pandemicOptionsPane, BorderLayout.NORTH);
+		// end of options pane
+		
 
-		start.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e){
-				time.start();
-			}
-		});
-		
-		Pandemic_Options_Pane.add(start);
-		Pandemic_Options_Pane.add(stop);
-		
-		this.add(Pandemic_Options_Pane);
-		
-		this.setLayout(new FlowLayout());
 		simulation = new JPanel() {
 			public void paintComponent(Graphics g)//The Graphics object 'g' is your paint brush
 			{
@@ -137,7 +165,7 @@ public class Pandemic_Director extends JPanel
 		simulation.setPreferredSize(new Dimension(WIDTH, HEIGHT) );
 		simulation.setBackground(Color.WHITE);
 		
-		this.add(simulation);
+		this.add(simulation, BorderLayout.CENTER);
 		
 		//this.setPreferredSize(new Dimension(WIDTH, HEIGHT) );
 		//this.setBackground(Color.WHITE);
