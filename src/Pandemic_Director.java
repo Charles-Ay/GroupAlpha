@@ -55,13 +55,13 @@ public class Pandemic_Director extends JPanel
 		
 		for (int i = 0; i < people.length; i++) {
 			if (i <= tempCutoffInt) {
-				people[i] = new Person(Person.Health.UNINFECTED, Person.Immunity.NO_IMMUNITY);
+				people[i] = new Person(Person.Health.UNINFECTED, Person.Immunity.NO_IMMUNITY, WIDTH, HEIGHT);
 			}
 			else if (i <= tempCutoffInt) {
-				people[i] = new Person(Person.Health.INFECTED, Person.Immunity.NO_IMMUNITY);
+				people[i] = new Person(Person.Health.INFECTED, Person.Immunity.NO_IMMUNITY, WIDTH, HEIGHT);
 			}
 			else {
-				people[i] = new Person(Person.Health.DEAD, Person.Immunity.THREE_SHOTS);
+				people[i] = new Person(Person.Health.DEAD, Person.Immunity.THREE_SHOTS, WIDTH, HEIGHT);
 			}
 			//etc.
 		}

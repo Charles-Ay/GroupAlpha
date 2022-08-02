@@ -65,8 +65,7 @@ public class Person {
 	public Person(Health health, Immunity immunity, int x, int y, boolean naturalImmunity) {
 		this.healthStatus = health;
 		this.immunity = immunity;
-		this.xCoordinate = x;
-		this.yCoordinate = y;
+		generateXY(x, y);
 		this.naturalImmunity = naturalImmunity;
 		this.updateStatusColor();
 		this.changeIncrement();
@@ -94,6 +93,40 @@ public class Person {
 				loopflag = false;
 			}
 		}//end loop
+	}
+	
+	private void generateXY(int widthValue, int heightValue) {
+		
+		int randomX, randomY;
+		boolean loopflag1 = true;
+		
+		while(loopflag1)
+		{
+			//generate a random value using widthValue
+			randomX = (int)(Math.random() * widthValue);
+			if(randomX >= 0 && randomX <= widthValue - 10)
+			{
+				//we have a valid x value, assign it to xCoord
+				this.xCoordinate = randomX;
+				//System.out.println("STUB:Valid random xCoord value of " + randomX);
+				loopflag1 = false;
+			}
+		}//end while
+		
+		//reset flag1 to true to start second loop
+		loopflag1 = true;
+		while(loopflag1)
+		{
+			//repeat for yCoord
+			randomY = (int)(Math.random() * heightValue);
+			if(randomY >= 0 && randomY <= heightValue - 10)
+			{
+				//we have a valid y value, assign it to yCoord
+				this.yCoordinate = randomY;
+				//System.out.println("STUB:Valid random yCoord value of " + randomY);
+			  loopflag1 = false;
+			}
+		}//end while
 	}
 	
 	private void updateStatusColor() {
