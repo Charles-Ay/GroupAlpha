@@ -44,6 +44,7 @@ public class Person {
 		ONE_SHOT,
 		TWO_SHOTS,
 		THREE_SHOTS,
+		NATURAL
 	}
 	
 	public Person(Health health, Immunity immunity) {

@@ -3,15 +3,20 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.EventListener;
 
 import javax.swing.Action;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SpringLayout;
 import javax.swing.Timer;
 
 //import Person.Health;
@@ -62,29 +67,76 @@ public class Pandemic_Director extends JPanel
 				people[i] = new Person(Person.Health.INFECTED, Person.Immunity.NO_IMMUNITY, WIDTH, HEIGHT);
 			}
 			else {
-				people[i] = new Person(Person.Health.DEAD, Person.Immunity.THREE_SHOTS, WIDTH, HEIGHT);
+				people[i] = new Person(Person.Health.UNINFECTED, Person.Immunity.THREE_SHOTS, WIDTH, HEIGHT);
 			}
-			//etc.
 		}
 
-		//REVISION JULY 15
-		//use a loop to populate the people with balls with random positions
-		//Set the color of the first ball to RED
-//		people[0] = new Person(Color.RED,WIDTH, HEIGHT);
-//
-//		for(int i = 1; i < people.length; i++)
-//		{
-//			if(i%25==0)
-//			{
-//				people[i] = new Person(Color.YELLOW,WIDTH, HEIGHT);
-//			}
-//			else
-//			{
-//			people[i] = new Person(Color.BLUE, WIDTH, HEIGHT);
-//			}
-//		}//end for
-
-		//set preferred size of panel using an ANONYMOUS Dimension object
+		JPanel statsDisplay = new JPanel();
+		statsDisplay.setLayout(new GridLayout(8, 1));
+		
+		JLabel infectedLbl, nonVaccinatedLbl, oneShotLbl, twoShotsLbl, threeShotsLbl, naturalReinfectedLbl, recoveredLbl, diedLbl;
+		int infected = 0; 
+		int nonVaccinated = 0; 
+		int oneShot = 0; 
+		int twoShots = 0; 
+		int threeShots = 0; 
+		int naturalReinfected = 0; 
+		int recovered = 0; 
+		int died = 0;
+		
+		for (int i = 0; i < people.length; i++) {
+			switch (people[i].getHealthStatus()) {
+				case INFECTED:
+					infected++;
+					switch (people[i].getImmunity()) {
+						case NO_IMMUNITY:
+							nonVaccinated++;
+							break;
+						case ONE_SHOT:
+							oneShot++;
+							break;
+						case TWO_SHOTS:
+							twoShots++;
+							break;
+						case THREE_SHOTS:
+							threeShots++;
+							break;
+						case NATURAL:
+							naturalReinfected++;
+							break;
+					}
+					break;
+				case DEAD:
+					died++;
+					break;
+				case UNINFECTED:
+					//and have been infected before
+					recovered++;
+					break;
+			}
+		}
+		
+		infectedLbl = new JLabel("Number of Infected People Total: " + infected);
+		nonVaccinatedLbl = new JLabel("Number of Infected People (Not Vaccinated): " + nonVaccinated);
+		oneShotLbl = new JLabel("Number of Infected People (1 Shot): " + oneShot);
+		twoShotsLbl = new JLabel("Number of Infected People (2 Shots): " + twoShots);
+		threeShotsLbl = new JLabel("Number of Infected People (3 Shots): " + threeShots);
+		naturalReinfectedLbl = new JLabel("Number of Re-Infected People: " + naturalReinfected);
+		recoveredLbl = new JLabel("Number of People that have Recovered: " + recovered);
+		diedLbl = new JLabel("Number of Dead People: " + died);
+		
+		
+		
+		statsDisplay.add(infectedLbl);
+		statsDisplay.add(nonVaccinatedLbl);
+		statsDisplay.add(oneShotLbl);
+		statsDisplay.add(twoShotsLbl);
+		statsDisplay.add(threeShotsLbl);
+		statsDisplay.add(naturalReinfectedLbl);
+		statsDisplay.add(recoveredLbl);
+		statsDisplay.add(diedLbl);
+		
+		this.add(statsDisplay, BorderLayout.WEST);
 		
 		// options pane
 		JPanel pandemicOptionsPane = new JPanel();
@@ -94,7 +146,39 @@ public class Pandemic_Director extends JPanel
 			// will hold options for collecting user input for populations
 			JPanel populationOptions = new JPanel();
 			// grid layout?
-			populationOptions.setLayout(new BorderLayout());
+			populationOptions.setLayout(new GridLayout(0,2));
+			
+			JLabel lblUnvacced = new JLabel("Unvaccinated Population %: ");
+			JTextField txtUnvaccinated = new JTextField();
+			
+			populationOptions.add(lblUnvacced);
+			populationOptions.add(txtUnvaccinated);
+			
+			JLabel lblShot1 = new JLabel("First Dose Vaccinated Population %: ");
+			JTextField txtShot1 = new JTextField();
+			
+			populationOptions.add(lblShot1);
+			populationOptions.add(txtShot1);
+			
+			JLabel lblShot2 = new JLabel("Second Dose Vaccinated Population %: ");
+			JTextField txtShot2 = new JTextField();
+			
+			populationOptions.add(lblShot2);
+			populationOptions.add(txtShot2);
+			
+			JLabel lblShot3 = new JLabel("Third Dose Vaccinated Population %: ");
+			JTextField txtShot3 = new JTextField();
+			
+			populationOptions.add(lblShot3);
+			populationOptions.add(txtShot3);
+			
+			JLabel lblNatural = new JLabel("Recovered with Natural Immunity Population %: ");
+			JTextField txtNatural = new JTextField();
+			
+			populationOptions.add(lblNatural);
+			populationOptions.add(txtNatural);
+			
+			pandemicOptionsPane.add(populationOptions, BorderLayout.CENTER);
 		
 			// will hold buttons for starting, stopping and restarting simulation
 			JPanel buttonsPane = new JPanel();
@@ -132,7 +216,7 @@ public class Pandemic_Director extends JPanel
 			buttonsPane.add(stop);
 			buttonsPane.add(restart);
 			
-			pandemicOptionsPane.add(buttonsPane);
+			pandemicOptionsPane.add(buttonsPane, BorderLayout.SOUTH);
 		
 		this.add(pandemicOptionsPane, BorderLayout.NORTH);
 		// end of options pane
@@ -171,7 +255,7 @@ public class Pandemic_Director extends JPanel
 		//this.setBackground(Color.WHITE);
 
 		//start the timer so that it starts creating ActionEvent baby objects.
-		this.time.start();
+		this.time.stop();
 		
 	}//end constructor
 	/*
