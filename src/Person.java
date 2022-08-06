@@ -57,6 +57,7 @@ public class Person {
 		this.naturalImmunity = naturalImmunity;
 		this.updateStatusColor();
 		this.changeIncrement();
+		if(health == Health.INFECTED)this.healthy = false;
 	}
 	
 	public Person(Health health, Immunity immunity, int x, int y) {
@@ -70,6 +71,7 @@ public class Person {
 		this.naturalImmunity = naturalImmunity;
 		this.updateStatusColor();
 		this.changeIncrement();
+		if(health == Health.INFECTED)this.healthy = false;
 	}
 	
 	public void increment() {
@@ -149,6 +151,7 @@ public class Person {
 		switch(healthStatus) {
 			case INFECTED:
 				statusColor = Color.RED;
+				healthy = false;
 				break;
 			case INFECTED_RECOVERD:
 				naturalImmunity = true;
@@ -158,10 +161,29 @@ public class Person {
 			case DEAD:
 				statusColor = Color.BLACK;
 				break;
+			case UNINFECTED:
+				healthy = true;
+				break;
 		}
 	}
 	
-	public void deathRNG() {
+	//returns true if cycle is over
+	public void cycle() {
+		if(healthStatus == Health.INFECTED) {
+			if(cycleCounter >= 150) {
+				deathRNG();
+				if (healthStatus != Health.DEAD) {
+					healthStatus = Health.INFECTED_RECOVERD;
+					naturalImmunity = true;
+					cycleCounter = 0;
+				}
+			}
+			else ++cycleCounter;
+		}
+		this.updateStatusColor();
+	}
+	
+	private void deathRNG() {
 		if(healthStatus != Health.DEAD) {
 			// Obtain a number between [1 - 100].
 			int n = rand.nextInt(100) + 1;
@@ -193,43 +215,76 @@ public class Person {
 	public void infectionRNG(Person otherPerson) {
 		//Check if either person is infect but not both
 		//if(n <= 80)this.healthStatus = Health.INFECTED;
-		if((otherPerson.healthStatus == Health.INFECTED || this.healthStatus == Health.INFECTED) && (!otherPerson.healthy && !this.healthy)) {
+		if((otherPerson.healthStatus == Health.INFECTED || this.healthStatus == Health.INFECTED) && (  (!otherPerson.healthy && this.healthy) ||(otherPerson.healthy && !this.healthy))) {
 			// Obtain a number between [1 - 100].
 			int n = rand.nextInt(100) + 1;
 			
 			//other person is infected
 			if(otherPerson.healthStatus == Health.INFECTED && !this.healthy) {
 				if(this.immunity == Person.Immunity.NO_IMMUNITY) {
-					if(n <= 80)this.healthStatus = Health.INFECTED;
+					if(n <= 80){
+						this.healthStatus = Health.INFECTED;
+						this.healthy = false;
+					}
 				}
 				else if(this.immunity == Person.Immunity.ONE_SHOT || this.naturalImmunity) {
-					if(this.naturalImmunity)if(n <= 40)this.healthStatus = Health.INFECTED;
-					if(n <= 60)this.healthStatus = Health.INFECTED;
+					if(this.naturalImmunity) {
+						if(n <= 40) {
+							this.healthStatus = Health.INFECTED;
+							this.healthy = false;
+						}
+					}
+					else if(n <= 60){
+						this.healthStatus = Health.INFECTED;
+						this.healthy = false;
+					}
 				}
 				else if(this.immunity == Person.Immunity.TWO_SHOTS) {
-					if(n <= 30)this.healthStatus = Health.INFECTED;
+					if(n <= 30){
+						this.healthStatus = Health.INFECTED;
+						this.healthy = false;
+					}
 				}
-				else if(this.immunity == Person.Immunity.TWO_SHOTS) {
-					if(n <= 10)this.healthStatus = Health.INFECTED;
+				else if(this.immunity == Person.Immunity.THREE_SHOTS) {
+					if(n <= 10){
+						this.healthStatus = Health.INFECTED;
+						this.healthy = false;
+					}
 				}
+				this.updateStatusColor();
 			}
 			//this person is infected
 			else {
 				if(otherPerson.immunity == Person.Immunity.NO_IMMUNITY) {
-					if(n <= 80)otherPerson.healthStatus = Health.INFECTED;
+					if(n <= 80){
+						otherPerson.healthStatus = Health.INFECTED;
+						otherPerson.healthy = false;
+					}
 				}
 				else if(otherPerson.immunity == Person.Immunity.ONE_SHOT || otherPerson.naturalImmunity) {
-					if(otherPerson.naturalImmunity)if(n <= 40)otherPerson.healthStatus = Health.INFECTED;
-					if(n <= 60)otherPerson.healthStatus = Health.INFECTED;
+					if(otherPerson.naturalImmunity){
+						otherPerson.healthStatus = Health.INFECTED;
+						otherPerson.healthy = false;
+					}
+					if(n <= 60){
+						otherPerson.healthStatus = Health.INFECTED;
+						otherPerson.healthy = false;
+					}
 				}
 				else if(otherPerson.immunity == Person.Immunity.TWO_SHOTS) {
-					if(n <= 30)otherPerson.healthStatus = Health.INFECTED;
+					if(n <= 30){
+						otherPerson.healthStatus = Health.INFECTED;
+						otherPerson.healthy = false;
+					}
 				}
-				else if(otherPerson.immunity == Person.Immunity.TWO_SHOTS) {
-					if(n <= 10)otherPerson.healthStatus = Health.INFECTED;
+				else if(otherPerson.immunity == Person.Immunity.THREE_SHOTS) {
+					if(n <= 10){
+						otherPerson.healthStatus = Health.INFECTED;
+						otherPerson.healthy = false;
+					}
 				}
+				otherPerson.updateStatusColor();
 			}
-			this.updateStatusColor();
 		}
 	}
 	
