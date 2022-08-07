@@ -16,7 +16,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SpringLayout;
 import javax.swing.Timer;
 
@@ -49,17 +51,20 @@ public class Pandemic_Director extends JPanel
 	
 	JPanel simulation;
 
-	JTextField txtUnvaccinated;
-	JTextField txtShot1;
-	JTextField txtShot2;
-	JTextField txtShot3;
-	JTextField txtNatural;
+	JSpinner spinUnvaccinated;
+	JSpinner spinShot1;
+	JSpinner spinShot2;
+	JSpinner spinShot3;
+	JSpinner spinNatural;
 	
 	int unvacAmt;
 	int shot1Amt;
 	int shot2Amt;
 	int shot3Amt;
 	int naturalImmuAmt;
+	
+	JLabel infectedLbl, nonVaccinatedLbl, oneShotLbl, twoShotsLbl, threeShotsLbl, naturalReinfectedLbl, recoveredLbl, diedLbl;
+	
 	
 	//constructor
 	public Pandemic_Director()
@@ -87,7 +92,6 @@ public class Pandemic_Director extends JPanel
 		JPanel statsDisplay = new JPanel();
 		statsDisplay.setLayout(new GridLayout(8, 1));
 		
-		JLabel infectedLbl, nonVaccinatedLbl, oneShotLbl, twoShotsLbl, threeShotsLbl, naturalReinfectedLbl, recoveredLbl, diedLbl;
 		int infected = 0; 
 		int nonVaccinated = 0; 
 		int oneShot = 0; 
@@ -162,34 +166,34 @@ public class Pandemic_Director extends JPanel
 			populationOptions.setLayout(new GridLayout(0,2));
 			
 			JLabel lblUnvacced = new JLabel("Unvaccinated Population %: ");
-			txtUnvaccinated = new JTextField();
+			spinUnvaccinated = new JSpinner(new SpinnerNumberModel(0, 0, 100, 5));
 			
 			populationOptions.add(lblUnvacced);
-			populationOptions.add(txtUnvaccinated);
+			populationOptions.add(spinUnvaccinated);
 			
 			JLabel lblShot1 = new JLabel("First Dose Vaccinated Population %: ");
-			txtShot1 = new JTextField();
+			spinShot1 = new JSpinner(new SpinnerNumberModel(0, 0, 100, 5));
 			
 			populationOptions.add(lblShot1);
-			populationOptions.add(txtShot1);
+			populationOptions.add(spinShot1);
 			
 			JLabel lblShot2 = new JLabel("Second Dose Vaccinated Population %: ");
-			txtShot2 = new JTextField();
+			spinShot2 = new JSpinner(new SpinnerNumberModel(0, 0, 100, 5));
 			
 			populationOptions.add(lblShot2);
-			populationOptions.add(txtShot2);
+			populationOptions.add(spinShot2);
 			
 			JLabel lblShot3 = new JLabel("Third Dose Vaccinated Population %: ");
-			txtShot3 = new JTextField();
+			spinShot3 = new JSpinner(new SpinnerNumberModel(0, 0, 100, 5));
 			
 			populationOptions.add(lblShot3);
-			populationOptions.add(txtShot3);
+			populationOptions.add(spinShot3);
 			
 			JLabel lblNatural = new JLabel("Recovered with Natural Immunity Population %: ");
-			txtNatural = new JTextField();
+			spinNatural = new JSpinner(new SpinnerNumberModel(0, 0, 100, 5));
 			
 			populationOptions.add(lblNatural);
-			populationOptions.add(txtNatural);
+			populationOptions.add(spinNatural);
 			
 			pandemicOptionsPane.add(populationOptions, BorderLayout.CENTER);
 		
@@ -212,121 +216,20 @@ public class Pandemic_Director extends JPanel
 			start.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e){
-					try {
-
-						//Assign user based on entered values
-						//Assign user based on entered values
-						unvacAmt = (people.length / 100) *  Integer.parseInt(txtUnvaccinated.getText());
-						shot1Amt = (people.length / 100) *  Integer.parseInt(txtShot1.getText());
-						shot2Amt = (people.length / 100) *  Integer.parseInt(txtShot2.getText());
-						shot3Amt = (people.length / 100) *  Integer.parseInt(txtShot3.getText());
-						naturalImmuAmt = (people.length / 100) *  Integer.parseInt(txtNatural.getText());
-						
-						int shot1Count = 0;
-						int shot2Count = 0;
-						int shot3Count = 0;
-						int naturalImmuAmtCount = 0;
-						
-						int total = Integer.parseInt(txtUnvaccinated.getText())
-								+ Integer.parseInt(txtShot1.getText())
-								+ Integer.parseInt(txtShot2.getText())
-								+ Integer.parseInt(txtShot3.getText())
-								+ Integer.parseInt(txtNatural.getText());
-						
-						if(total != 100)throw new ArithmeticException();
-						
-						for(int i = 0; i < people.length; ++i) {
-							if(i < unvacAmt) {
-								people[i] = new Person(Person.Health.UNINFECTED, Person.Immunity.NO_IMMUNITY, WIDTH, HEIGHT);
-							}
-							else {
-								if(shot1Count < shot1Amt) {
-									people[i] = new Person(Person.Health.UNINFECTED, Person.Immunity.ONE_SHOT, WIDTH, HEIGHT);
-									++shot1Count;
-								}
-								else if(shot2Count < shot2Amt) {
-									people[i] = new Person(Person.Health.UNINFECTED, Person.Immunity.TWO_SHOTS, WIDTH, HEIGHT);
-									++shot2Count;
-								}
-								else if(shot3Count < shot3Amt) {
-									people[i] = new Person(Person.Health.UNINFECTED, Person.Immunity.THREE_SHOTS, WIDTH, HEIGHT);
-									++shot3Count;
-								}
-								else if(shot3Count < shot3Amt) {
-									people[i] = new Person(Person.Health.UNINFECTED, Person.Immunity.THREE_SHOTS, WIDTH, HEIGHT);
-									++shot3Count;
-								}
-								else if(naturalImmuAmtCount  < naturalImmuAmt) {
-									people[i] = new Person(Person.Health.INFECTED_RECOVERD, Person.Immunity.NO_IMMUNITY, WIDTH, HEIGHT, true);
-									++naturalImmuAmtCount ;
-								}
-							}
-						}
-						
-						people[ARRAY_SIZE - 1] = new Person(Person.Health.INFECTED, Person.Immunity.NO_IMMUNITY, WIDTH, HEIGHT, true);
-						time.start();
-					}
-					//too many values
-					catch(ArithmeticException ex) {
- 						JOptionPane.showMessageDialog(null, "PLEASE ENSURE THAT ALL FEILDS ADD UP TO 100", "ERROR: TOTAL PERCENT", JOptionPane.INFORMATION_MESSAGE);
-					}
-					//if user enters a letter
-					catch(Exception ex) {
- 						JOptionPane.showMessageDialog(null, "PLEASE ENTER VALID DATA", "ERROR: INVALID DATA", JOptionPane.INFORMATION_MESSAGE);
-					}
+					
+					// CHECK IF PROGRAM WAS RUNNING
+					
+					// RESUME -> timer.Start();
+					
+					// ELSE MAKE NEW POPULATION
+					generatePopulation();
 				}
 			});
 			
 			restart.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e){
-					try {
-						int shot1Count = 0;
-						int shot2Count = 0;
-						int shot3Count = 0;
-						int naturalImmuAmtCount = 0;
-						int total = unvacAmt + shot1Amt + shot2Amt + shot3Amt + naturalImmuAmt;
-						if(total != 100)throw new ArithmeticException();
-						
-						for(int i = 0; i < people.length; ++i) {
-							if(i < unvacAmt) {
-								people[i] = new Person(Person.Health.UNINFECTED, Person.Immunity.NO_IMMUNITY, WIDTH, HEIGHT);
-							}
-							else {
-								if(shot1Count < shot1Amt) {
-									people[i] = new Person(Person.Health.UNINFECTED, Person.Immunity.ONE_SHOT, WIDTH, HEIGHT);
-									++shot1Count;
-								}
-								else if(shot2Count < shot2Amt) {
-									people[i] = new Person(Person.Health.UNINFECTED, Person.Immunity.TWO_SHOTS, WIDTH, HEIGHT);
-									++shot2Count;
-								}
-								else if(shot3Count < shot3Amt) {
-									people[i] = new Person(Person.Health.UNINFECTED, Person.Immunity.THREE_SHOTS, WIDTH, HEIGHT);
-									++shot3Count;
-								}
-								else if(shot3Count < shot3Amt) {
-									people[i] = new Person(Person.Health.UNINFECTED, Person.Immunity.THREE_SHOTS, WIDTH, HEIGHT);
-									++shot3Count;
-								}
-								else if(naturalImmuAmtCount  < naturalImmuAmt) {
-									people[i] = new Person(Person.Health.INFECTED_RECOVERD, Person.Immunity.NO_IMMUNITY, WIDTH, HEIGHT, true);
-									++naturalImmuAmtCount ;
-								}
-							}
-						}
-						
-						people[ARRAY_SIZE - 1] = new Person(Person.Health.INFECTED, Person.Immunity.NO_IMMUNITY, WIDTH, HEIGHT, true);
-						time.restart();
-					}
-					//too many values
-					catch(ArithmeticException ex) {
- 						JOptionPane.showMessageDialog(null, "PLEASE ENSURE THAT ALL FEILDS ADD UP TO 100", "ERROR: TOTAL PERCENT", JOptionPane.INFORMATION_MESSAGE);
-					}
-					//if user enters a letter
-					catch(Exception ex) {
- 						JOptionPane.showMessageDialog(null, "PLEASE ENTER VALID DATA", "ERROR: INVALID DATA", JOptionPane.INFORMATION_MESSAGE);
-					}
+					generatePopulation();
 				}
 			});
 			
@@ -378,34 +281,6 @@ public class Pandemic_Director extends JPanel
 		this.time.stop();
 		
 	}//end constructor
-	/*
-	//OVER-RIDE the JPanel's paintComponent() method
-	public void paintComponent(Graphics g)//The Graphics object 'g' is your paint brush
-	{
-		//call super version of this method to "throw the bucket of paint onto the canvas"
-		// and cover up any previous image.
-		//NOTE: try commenting this out to see the effect of not repainting.
-		super.paintComponent(g);
-
-		//set brush color
-		g.setColor(Color.PINK);
-		//REIVSISION HERE: need to access the Ball object's state values in the call to
-		// fillOval
-		//REVISION JULY 15: iterate through the loop to paint the balls onto the panel
-		// and set the color using the Ball object's color value
-		for(int i = 0; i < people.length; i++)
-		{
-			//get the color
-			g.setColor(Color.BLUE);
-			g.fillOval(people[i].getxCoord(), people[i].getyCoord(), 10, 10);
-		}
-		//draw a circle shape
-
-
-	}//end paintComponent over-ride
-*/
-
-	//INNER CLASS GOES HERE
 
 	private class BounceListener implements ActionListener
 	{
@@ -481,11 +356,130 @@ public class Pandemic_Director extends JPanel
 
 			//call repaint(), which in turn calls paintComponent()
 			repaint();
-
+			
+			updateStatusCounts();
 		}//end method
 
 	}//end inner class
 //<<<<<<< HEAD
+	
+	public void generatePopulation() {
+		
+		try {
+			//Assign user based on entered values
+			unvacAmt = (people.length / 100) *  ((Integer) spinUnvaccinated.getValue());
+			shot1Amt = (people.length / 100) *  ((Integer) spinShot1.getValue());
+			shot2Amt = (people.length / 100) *  ((Integer) spinShot2.getValue());
+			shot3Amt = (people.length / 100) *  ((Integer) spinShot3.getValue());
+			naturalImmuAmt = (people.length / 100) *  ((Integer) spinNatural.getValue());
+			
+			int shot1Count = 0;
+			int shot2Count = 0;
+			int shot3Count = 0;
+			int naturalImmuAmtCount = 0;
+			
+			int total = ((Integer) spinUnvaccinated.getValue())
+					+ ((Integer) spinShot1.getValue())
+					+ ((Integer) spinShot2.getValue())
+					+ ((Integer) spinShot3.getValue())
+					+ ((Integer) spinNatural.getValue());
+			
+			if(total != 100)throw new ArithmeticException();
+			
+			for(int i = 0; i < people.length; ++i) {
+				if(i < unvacAmt) {
+					people[i] = new Person(Person.Health.UNINFECTED, Person.Immunity.NO_IMMUNITY, WIDTH, HEIGHT);
+				}
+				else {
+					if(shot1Count < shot1Amt) {
+						people[i] = new Person(Person.Health.UNINFECTED, Person.Immunity.ONE_SHOT, WIDTH, HEIGHT);
+						++shot1Count;
+					}
+					else if(shot2Count < shot2Amt) {
+						people[i] = new Person(Person.Health.UNINFECTED, Person.Immunity.TWO_SHOTS, WIDTH, HEIGHT);
+						++shot2Count;
+					}
+					else if(shot3Count < shot3Amt) {
+						people[i] = new Person(Person.Health.UNINFECTED, Person.Immunity.THREE_SHOTS, WIDTH, HEIGHT);
+						++shot3Count;
+					}
+					else if(shot3Count < shot3Amt) {
+						people[i] = new Person(Person.Health.UNINFECTED, Person.Immunity.THREE_SHOTS, WIDTH, HEIGHT);
+						++shot3Count;
+					}
+					else if(naturalImmuAmtCount  < naturalImmuAmt) {
+						people[i] = new Person(Person.Health.INFECTED_RECOVERD, Person.Immunity.NO_IMMUNITY, WIDTH, HEIGHT, true);
+						++naturalImmuAmtCount ;
+					}
+				}
+			}
+			
+			people[ARRAY_SIZE - 1] = new Person(Person.Health.INFECTED, Person.Immunity.NO_IMMUNITY, WIDTH, HEIGHT, true);
+			time.start();
+		}
+		//too many values
+		catch(ArithmeticException ex) {
+				JOptionPane.showMessageDialog(null, "PLEASE ENSURE THAT ALL FEILDS ADD UP TO 100", "ERROR: TOTAL PERCENT", JOptionPane.INFORMATION_MESSAGE);
+		}
+		//if user enters a letter
+		catch(Exception ex) {
+				JOptionPane.showMessageDialog(null, "PLEASE ENTER VALID DATA", "ERROR: INVALID DATA", JOptionPane.INFORMATION_MESSAGE);
+		}
+	}
+	
+	public void updateStatusCounts() {
+
+		int infected = 0;
+		int nVacc = 0;
+		int one = 0;
+		int two = 0;
+		int three = 0;
+		int reI = 0;
+		int recov = 0;
+		int dead = 0;
+		
+		// update population counts
+		for(int i = 0; i < people.length; i++) {
+			Person temp = people[i];
+			
+			switch(temp.getHealthStatus()) {
+			case INFECTED:
+				infected++;
+				
+				switch(temp.getImmunity()) {
+				case NO_IMMUNITY:
+					nVacc++; 
+					break;
+				case ONE_SHOT:
+					one++; 
+					break;
+				case TWO_SHOTS:
+					two++; 
+					break;
+				case THREE_SHOTS:
+					three++; 
+					break;
+				}
+				
+				break;
+			case INFECTED_RECOVERD:
+				recov++;
+				break;
+			case DEAD:
+				dead++;
+				break;
+			}
+		}
+		
+		infectedLbl.setText(String.valueOf("Number of Infected People Total: " +infected));
+		nonVaccinatedLbl.setText(String.valueOf("Number of Infected People (Not Vaccinated): " +nVacc));
+		oneShotLbl.setText(String.valueOf("Number of Infected People (1 Shot): " +one));
+		twoShotsLbl.setText(String.valueOf("Number of Infected People (2 Shots): " +two));
+		threeShotsLbl.setText(String.valueOf("Number of Infected People (3 Shots): " +three));
+		naturalReinfectedLbl.setText("Number of Re-Infected People: NOT IMPLEMENTED");
+		recoveredLbl.setText(String.valueOf("Number of People that have Recovered: " +recov));
+		diedLbl.setText(String.valueOf("Number of Dead People: " + dead));
+	}
 
 	public void calcPosition(Person person) {
 		//checks if dead
