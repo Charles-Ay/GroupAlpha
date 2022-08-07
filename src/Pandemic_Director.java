@@ -63,7 +63,7 @@ public class Pandemic_Director extends JPanel
 	int shot3Amt;
 	int naturalImmuAmt;
 	
-	boolean hasStarted = false;
+	boolean hasStarted;
 	
 	JLabel infectedLbl, nonVaccinatedLbl, oneShotLbl, twoShotsLbl, threeShotsLbl, naturalReinfectedLbl, recoveredLbl, diedLbl;
 	
@@ -72,6 +72,11 @@ public class Pandemic_Director extends JPanel
 	public Pandemic_Director()
 	{
 		//create Timer and register a listener for it.
+		
+		
+		
+		hasStarted = false;
+		this.setSize(900, 800);
 		this.time = new Timer(LAG_TIME, new BounceListener() );
 		this.setLayout(new BorderLayout());
 		//template for making new people
@@ -225,10 +230,10 @@ public class Pandemic_Director extends JPanel
 					}
 					else {
 				    // ELSE MAKE NEW POPULATION
-					generatePopulation();
-					hasStarted = true;
+						if(generatePopulation()) {
+							hasStarted = true;
+						}
 					}
-					
 				}
 			});
 			
@@ -369,7 +374,7 @@ public class Pandemic_Director extends JPanel
 	}//end inner class
 //<<<<<<< HEAD
 	
-	public void generatePopulation() {
+	public boolean generatePopulation() {
 		
 		try {
 			//Assign user based on entered values
@@ -426,11 +431,15 @@ public class Pandemic_Director extends JPanel
 		//too many values
 		catch(ArithmeticException ex) {
 				JOptionPane.showMessageDialog(null, "PLEASE ENSURE THAT ALL FEILDS ADD UP TO 100", "ERROR: TOTAL PERCENT", JOptionPane.INFORMATION_MESSAGE);
+				return false;
 		}
 		//if user enters a letter
 		catch(Exception ex) {
 				JOptionPane.showMessageDialog(null, "PLEASE ENTER VALID DATA", "ERROR: INVALID DATA", JOptionPane.INFORMATION_MESSAGE);
+				return false;
 		}
+		
+		return true;
 	}
 	
 	public void updateStatusCounts() {
@@ -521,39 +530,6 @@ public class Pandemic_Director extends JPanel
 			person.setxCoord(person.getxCoord() + person.getxIncrement());
 			person.setyCoord(person.getyCoord() + person.getyIncrement());
 	}
-//=======
-	
-//	public void calcPosition(Ball ball)
-////>>>>>>> 55c38c35a5b7fa2bb2d1d4296b79f3762710e8a2
-//	{
-//
-//		//check if near boundary. If so, then apply negative operator to the relevant increment
-//		//Changed the operators to >= and <= from == to fix the "disappearing ball" problem
-//		if(person.getxCoord() >= WIDTH - 10 )
-//		{
-//			//we are at right side, so change xIncrement to a negative
-//			person.setxIncrement(person.getxIncrement() * -1);
-//		}
-//		if(person.getxCoord() <= 0)//changed operator to <=
-//		{
-//			//if true, we're at left edge, flip the flag
-//			person.setxIncrement(person.getxIncrement() * -1);;
-//		}
-//		if(person.getyCoord() >= HEIGHT - 10 )
-//		{
-//			person.setyIncrement(person.getyIncrement() * -1);
-//		}
-//		if(person.getyCoord() <= 0)
-//		{
-//			//if true, we're at left edge, flip the flag
-//			person.setyIncrement(person.getyIncrement() * -1);;
-//		}
-//		//adjust the person positions using the getters and setters
-//		person.setxCoord(person.getxCoord() + person.getxIncrement());
-//		person.setyCoord(person.getyCoord() + person.getyIncrement());
-//
-//
-//	}//end calcPosition
 
 	public static void main(String[] args)
 	{
@@ -563,7 +539,7 @@ public class Pandemic_Director extends JPanel
 		//boilerplate
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLayout(new FlowLayout() );//ANONYMOUS object
-		frame.setSize(1200,1000);
+		frame.setSize(900,800);
 		frame.setLocationRelativeTo(null);
 
 		//set background color of contentPane
@@ -573,7 +549,7 @@ public class Pandemic_Director extends JPanel
 		frame.add(new Pandemic_Director() );
 		
 		//frame.add(buildOptionsPane());
-		frame.pack();//shrinks the JFrame to the smallest size possible to conserve
+		//frame.pack();//shrinks the JFrame to the smallest size possible to conserve
 		             //screen real estate. Comment it out to see its effect
 		frame.setVisible(true);
 
