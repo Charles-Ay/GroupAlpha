@@ -14,6 +14,9 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
@@ -56,6 +59,8 @@ public class Pandemic_Director extends JPanel
 	JSpinner spinShot2;
 	JSpinner spinShot3;
 	JSpinner spinNatural;
+	JSpinner spinPopulation;
+	
 	
 	int unvacAmt;
 	int shot1Amt;
@@ -198,6 +203,12 @@ public class Pandemic_Director extends JPanel
 			
 			populationOptions.add(lblNatural);
 			populationOptions.add(spinNatural);
+			
+			JLabel lblPopulation = new JLabel("Total Population of Simmulation: ");
+			spinPopulation = new JSpinner(new SpinnerNumberModel(100, 100, 500, 10));
+			
+			populationOptions.add(lblPopulation);
+			populationOptions.add(spinPopulation);
 			
 			pandemicOptionsPane.add(populationOptions, BorderLayout.CENTER);
 		
@@ -541,6 +552,23 @@ public class Pandemic_Director extends JPanel
 
 		//set background color of contentPane
 		frame.getContentPane().setBackground(Color.BLUE);
+		
+		JMenuBar menuBar = new JMenuBar();
+		JMenu mnuAbout = new JMenu("About");
+		JMenuItem mnuAuthors = new JMenuItem("Authors");
+		
+		mnuAuthors.addActionListener( new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				JOptionPane.showMessageDialog(null, "Charles Ayeni \n Maximus Slabon \n Braedan Watson \n Evan Maltby \n Matt Taylor", "Contributing Authors", JOptionPane.INFORMATION_MESSAGE);
+			}
+		});
+		
+		mnuAbout.add(mnuAuthors);
+		menuBar.add(mnuAbout);
+		frame.setJMenuBar(menuBar);
 
 		//create an ANONYMOUS object of the class and add the JPanel to the JFrame
 		frame.add(new Pandemic_Director() );

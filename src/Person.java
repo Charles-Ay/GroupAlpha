@@ -32,6 +32,7 @@ public class Person {
 		UNINFECTED,
 		INFECTED,
 		INFECTED_RECOVERD,
+		REINFECTED,
 		DEAD
 	}
 	
