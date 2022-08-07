@@ -29,7 +29,7 @@ import javax.swing.Timer;
 public class Pandemic_Director extends JPanel
 {
 	//CLASS WIDE SCOPE AREA
-	private final int WIDTH = 800, HEIGHT = 700;//make size of screen
+	private final int WIDTH = 900, HEIGHT = 800;//make size of screen
 	private final int LAG_TIME = 50; // 250 time in milliseconds between re-paints of screen
 	private Timer time;//Timer class object that will fire events every LAG_TIME interval
 	private final int IMG_DIM = 10; //size of ball to be drawn
@@ -72,11 +72,8 @@ public class Pandemic_Director extends JPanel
 	public Pandemic_Director()
 	{
 		//create Timer and register a listener for it.
-		
-		
-		
 		hasStarted = false;
-		this.setSize(900, 800);
+		this.setSize(1000, 900);
 		this.time = new Timer(LAG_TIME, new BounceListener() );
 		this.setLayout(new BorderLayout());
 		//template for making new people
@@ -539,7 +536,7 @@ public class Pandemic_Director extends JPanel
 		//boilerplate
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLayout(new FlowLayout() );//ANONYMOUS object
-		frame.setSize(900,800);
+		frame.setSize(1200,1000);
 		frame.setLocationRelativeTo(null);
 
 		//set background color of contentPane
