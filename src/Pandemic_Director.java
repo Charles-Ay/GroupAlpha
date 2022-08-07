@@ -63,6 +63,8 @@ public class Pandemic_Director extends JPanel
 	int shot3Amt;
 	int naturalImmuAmt;
 	
+	boolean hasStarted = false;
+	
 	JLabel infectedLbl, nonVaccinatedLbl, oneShotLbl, twoShotsLbl, threeShotsLbl, naturalReinfectedLbl, recoveredLbl, diedLbl;
 	
 	
@@ -218,11 +220,15 @@ public class Pandemic_Director extends JPanel
 				public void actionPerformed(ActionEvent e){
 					
 					// CHECK IF PROGRAM WAS RUNNING
-					
-					// RESUME -> timer.Start();
-					
-					// ELSE MAKE NEW POPULATION
+					if (hasStarted == true) {
+						time.start();
+					}
+					else {
+				    // ELSE MAKE NEW POPULATION
 					generatePopulation();
+					hasStarted = true;
+					}
+					
 				}
 			});
 			
