@@ -34,12 +34,12 @@ public class Pandemic_Director extends JPanel
 	//CLASS WIDE SCOPE AREA
 	private final int WIDTH = 900, HEIGHT = 800;//make size of screen
 	private final int LAG_TIME = 50; // 250 time in milliseconds between re-paints of screen
-	private Timer time;//Timer class object that will fire events every LAG_TIME interval
+	Timer time;//Timer class object that will fire events every LAG_TIME interval
 	private final int IMG_DIM = 10; //size of ball to be drawn
 
 	//REVISION July 14 : create an array of Ball objects here in class scope
 	private final int ARRAY_SIZE = 501; //get input || Last person is infected
-	private Person [] people = new Person[ARRAY_SIZE];
+	Person [] people = new Person[ARRAY_SIZE];
 
 	//REVSION NEEDED HERE: need to use the Ball class to create two Ball objects
 	// with different starting locations
@@ -71,13 +71,26 @@ public class Pandemic_Director extends JPanel
 	boolean hasStarted;
 	
 	JLabel infectedLbl, nonVaccinatedLbl, oneShotLbl, twoShotsLbl, threeShotsLbl, naturalReinfectedLbl, recoveredLbl, diedLbl;
+
+	int simulationCycleCount;
 	
+	// keep track of populations stats
+
+	int inf;
+	int nVacc;
+	int one;
+	int two;
+	int three;
+	int reI;
+	int recov;
+	int dead;
 	
 	//constructor
 	public Pandemic_Director()
 	{
 		//create Timer and register a listener for it.
 		hasStarted = false;
+		simulationCycleCount = 0;
 		this.setSize(400, 400);
 		this.time = new Timer(LAG_TIME, new BounceListener() );
 		this.setLayout(new BorderLayout());
@@ -205,7 +218,7 @@ public class Pandemic_Director extends JPanel
 			populationOptions.add(spinNatural);
 			
 			JLabel lblPopulation = new JLabel("Total Population of Simmulation: ");
-			spinPopulation = new JSpinner(new SpinnerNumberModel(100, 100, 500, 10));
+			spinPopulation = new JSpinner(new SpinnerNumberModel(500, 100, 500, 10));
 			
 			populationOptions.add(lblPopulation);
 			populationOptions.add(spinPopulation);
@@ -249,6 +262,7 @@ public class Pandemic_Director extends JPanel
 				@Override
 				public void actionPerformed(ActionEvent e){
 					generatePopulation();
+					simulationCycleCount = 0; // reset cycle count for simulation
 				}
 			});
 			
@@ -308,77 +322,167 @@ public class Pandemic_Director extends JPanel
 		public void actionPerformed(ActionEvent e)
 		{
 
-			for(int i = 0; i < people.length; i++)
-			{
-				calcPosition(people[i]);
-			}
+			if(simulationCycleCount < 450) {
 
-			int deltaX;//difference in pixels of the x coordinates of the two Persons being compared.
-			int deltaY;//difference in pixels of the y coordinates of the two Persons being compared.
-
-			//temp variables to hold the x and y coords of both Persons in the pair.
-			//The Persons will be referred to as firstPerson and secondPerson
-			int firstPersonX,  firstPersonY, secondPersonX, secondPersonY;
-
-			//outer loop gets the firstPerson of the pair and its coordinates.
-			for(int i = 0; i < people.length -1; i++)//LCC to length-1 to avoid out of bounds
-			{
-				//get the x and y co-ords of  first Person of the pair
-				firstPersonX = people[i].getxCoord();
-				firstPersonY = people[i].getyCoord();
-
-				//Inner loop gets the second Person of the pair
-				//start inner loop counter at i+1 so we don't compare the first Person to itself.
-				for(int j = i+1; j < people.length; j++)
+				for(int i = 0; i < people.length; i++)
 				{
-					secondPersonX = people[j].getxCoord();
-					secondPersonY = people[j].getyCoord();
+					calcPosition(people[i]);
+				}
 
-					//now calculate deltaX and deltaY for the pair of Persons
-					deltaX = firstPersonX - secondPersonX;
-					deltaY = firstPersonY - secondPersonY;
-					//square them to get rid of negative values, then add them and take square root of total
-					// and compare it to Person diameter held in IMG_DIM
-					if(Math.sqrt(deltaX *deltaX + deltaY * deltaY) <= IMG_DIM)//if true, they have touched
+				int deltaX;//difference in pixels of the x coordinates of the two Persons being compared.
+				int deltaY;//difference in pixels of the y coordinates of the two Persons being compared.
+
+				//temp variables to hold the x and y coords of both Persons in the pair.
+				//The Persons will be referred to as firstPerson and secondPerson
+				int firstPersonX,  firstPersonY, secondPersonX, secondPersonY;
+
+				//outer loop gets the firstPerson of the pair and its coordinates.
+				for(int i = 0; i < people.length -1; i++)//LCC to length-1 to avoid out of bounds
+				{
+					//get the x and y co-ords of  first Person of the pair
+					firstPersonX = people[i].getxCoord();
+					firstPersonY = people[i].getyCoord();
+
+					//Inner loop gets the second Person of the pair
+					//start inner loop counter at i+1 so we don't compare the first Person to itself.
+					for(int j = i+1; j < people.length; j++)
 					{
-						//REVSION HERE: not using the xFlag and yFlag anymore, so now we  adjust
-						// the xIncrement and yIncrement by multiplying by -1
-//						people[i].setxIncrement(people[i].getxIncrement() * -1);
-//						people[i].setyIncrement(people[i].getyIncrement() * -1);
-//
-//						//now do the secondPerson
-//						people[j].setxIncrement(people[j].getxIncrement() * -1);
-//						people[j].setyIncrement(people[j].getyIncrement() * -1);
+						secondPersonX = people[j].getxCoord();
+						secondPersonY = people[j].getyCoord();
 
-						//ALSO, to get a bit of directional change generate a new set of random values for the xIncrement
-						//  and yIncrement of each Person involved in the collision and assign them.
-						people[i].changeIncrement();
-						people[j].changeIncrement();
-//						int firstPersonnewxIncrement = (int)(Math.random()*11 - 5);
-//						int firstPersonnewyIncrement = (int)(Math.random()*11 - 5);
-//						int secondPersonnewxIncrement = (int)(Math.random()*11 - 5);
-//						int secondPersonnewyIncrement = (int)(Math.random()*11 - 5);
-//
-//						//this will prevent Persons from "getting stuck" on the borders.
-//						people[i].setxIncrement(firstPersonnewxIncrement);
-//						people[i].setyIncrement(firstPersonnewyIncrement);
-//						people[j].setxIncrement(secondPersonnewxIncrement);
-//						people[j].setyIncrement(secondPersonnewyIncrement);
-						
-						if(people[j].getHealthStatus() == Person.Health.INFECTED||people[i].getHealthStatus() == Person.Health.INFECTED) {
+						//now calculate deltaX and deltaY for the pair of Persons
+						deltaX = firstPersonX - secondPersonX;
+						deltaY = firstPersonY - secondPersonY;
+						//square them to get rid of negative values, then add them and take square root of total
+						// and compare it to Person diameter held in IMG_DIM
+						if(Math.sqrt(deltaX *deltaX + deltaY * deltaY) <= IMG_DIM)//if true, they have touched
+						{
+							//REVSION HERE: not using the xFlag and yFlag anymore, so now we  adjust
+							// the xIncrement and yIncrement by multiplying by -1
+							people[i].setxIncrement(people[i].getxIncrement() * -1);
+							people[i].setyIncrement(people[i].getyIncrement() * -1);
 
-							int x = 10;
+							//now do the secondPerson
+							people[j].setxIncrement(people[j].getxIncrement() * -1);
+							people[j].setyIncrement(people[j].getyIncrement() * -1);
+
+							//ALSO, to get a bit of directional change generate a new set of random values for the xIncrement
+							//  and yIncrement of each Person involved in the collision and assign them.
+							int firstPersonnewxIncrement = (int)(Math.random()*11 - 5);
+							int firstPersonnewyIncrement = (int)(Math.random()*11 - 5);
+							int secondPersonnewxIncrement = (int)(Math.random()*11 - 5);
+							int secondPersonnewyIncrement = (int)(Math.random()*11 - 5);
+
+							//this will prevent Persons from "getting stuck" on the borders.
+							people[i].setxIncrement(firstPersonnewxIncrement);
+							people[i].setyIncrement(firstPersonnewyIncrement);
+							people[j].setxIncrement(secondPersonnewxIncrement);
+							people[j].setyIncrement(secondPersonnewyIncrement);
+							
+							if(people[j].getHealthStatus() == Person.Health.INFECTED||people[i].getHealthStatus() == Person.Health.INFECTED) {
+
+								int x = 10;
+							}
+							people[j].infectionRNG(people[i]);
+							int t = 0;
+						}//end if
+					}//end inner for
+				}//end outer loop
+
+				//call repaint(), which in turn calls paintComponent()
+				repaint();
+				
+				updateStatusCounts();
+				
+				simulationCycleCount++;
+			} else {
+				// Simulation has ended
+				time.stop();
+				// loop through people to get who was infected during simulation
+				
+				int totalUnvacc = 0;
+				int totalOneShot = 0;
+				int totalTwoShot = 0;
+				int totalThreeShot = 0;
+				int totalNatImm = 0;
+				
+				int totalUnvaccDead = 0;
+				int totalOneShotDead = 0;
+				int totalTwoShotDead = 0;
+				int totalThreeShotDead = 0;
+				int totalNatImmDead = 0;
+				
+				for(int i = 0; i < people.length; i++) {
+					Person temp = people[i];
+					switch(temp.getHealthStatus()) {
+					case INFECTED:
+					case INFECTED_RECOVERD:
+						switch(temp.getImmunity()) {
+						case NO_IMMUNITY:
+							totalUnvacc++; 
+							break;
+						case ONE_SHOT:
+							totalOneShot++; 
+							break;
+						case TWO_SHOTS:
+							totalTwoShot++; 
+							break;
+						case THREE_SHOTS:
+							totalThreeShot++; 
+							break;
+						case NATURAL:
+							totalNatImm++; 
+							break;
 						}
-						people[j].infectionRNG(people[i]);
-						int t = 0;
-					}//end if
-				}//end inner for
-			}//end outer loop
+						break;
+					case DEAD:
+						switch(temp.getImmunity()) {
+						case NO_IMMUNITY:
+							totalUnvacc++;
+							totalUnvaccDead++;
+							break;
+						case ONE_SHOT:
+							totalOneShot++; 
+							totalOneShotDead++;
+							break;
+						case TWO_SHOTS:
+							totalTwoShot++; 
+							totalTwoShotDead++;
+							break;
+						case THREE_SHOTS:
+							totalThreeShot++;
+							totalThreeShotDead++; 
+							break;
+						case NATURAL:
+							totalNatImm++; 
+							totalNatImmDead++;
+							break;
+						}
+						
+						break;
+					default:
+						break;
+					}
+				}
+				// display stats panel
+				
+				JOptionPane.showMessageDialog(null, "Your Simulation has Finished!\n"
+						+ (((double)inf + dead + recov) / population) * 100 + "% of the population contracted the disease\n"
+						+ (((double)totalUnvacc) / unvacAmt) * 100 + "% of unvaccinated contracted the disease\n"
+						+ (((double)totalOneShot) / shot1Amt) * 100 + "% of one-shot-vaccinated contracted the disease\n"
+						+ (((double)totalTwoShot) / shot2Amt) * 100 + "% of two-shot-vaccinated contracted the disease\n"
+						+ (((double)totalThreeShot) / shot3Amt) * 100 + "% of three-shot-vaccinated contracted the disease\n"
+						+ (((double)totalNatImm) / naturalImmuAmt) * 100 + "% of naturally immune contracted the disease\n\n"
 
-			//call repaint(), which in turn calls paintComponent()
-			repaint();
+						+ (((double)totalUnvaccDead) / unvacAmt) * 100 + "% Death rate for unvaccinated individuals\n"
+						+ (((double)totalOneShotDead) / shot1Amt) * 100 + "% Death rate for one-shot-vaccinated individuals\n"
+						+ (((double)totalTwoShotDead) / shot2Amt) * 100 + "% Death rate for two-shot-vaccinated individuals\n"
+						+ (((double)totalThreeShotDead) / shot3Amt) * 100 + "% Death rate for three-shot-vaccinated individuals\n"
+						+ (((double)totalNatImmDead) / naturalImmuAmt) * 100 + "% Death rate for Unaturally immune individuals\n"
+						
+						+ "TO START ANOTHER SIMULATION CLOSE THIS WINDOW AND PRESS RESTART\n", "End Of Simulation", JOptionPane.INFORMATION_MESSAGE);
+			}
 			
-			updateStatusCounts();
 		}//end method
 
 	}//end inner class
@@ -387,6 +491,11 @@ public class Pandemic_Director extends JPanel
 	public boolean generatePopulation() {
 		
 		try {
+			
+			population = (Integer)spinPopulation.getValue();
+			
+			//people = new Person[population]; // throws error?
+			
 			//Assign user based on entered values
 			unvacAmt = (people.length / 100) *  ((Integer) spinUnvaccinated.getValue());
 			shot1Amt = (people.length / 100) *  ((Integer) spinShot1.getValue());
@@ -454,14 +563,14 @@ public class Pandemic_Director extends JPanel
 	
 	public void updateStatusCounts() {
 
-		int infected = 0;
-		int nVacc = 0;
-		int one = 0;
-		int two = 0;
-		int three = 0;
-		int reI = 0;
-		int recov = 0;
-		int dead = 0;
+		inf = 0;
+		nVacc = 0;
+		one = 0;
+		two = 0;
+		three = 0;
+		reI = 0;
+		recov = 0;
+		dead = 0;
 		
 		// update population counts
 		for(int i = 0; i < people.length; i++) {
@@ -469,7 +578,7 @@ public class Pandemic_Director extends JPanel
 			
 			switch(temp.getHealthStatus()) {
 			case INFECTED:
-				infected++;
+				inf++;
 				if (temp.getColor() == Color.GREEN) {
 					reI++;
 				}
@@ -499,7 +608,7 @@ public class Pandemic_Director extends JPanel
 			}
 		}
 		
-		infectedLbl.setText(String.valueOf("Number of Infected People Total: " +infected));
+		infectedLbl.setText(String.valueOf("Number of Infected People Total: " +inf));
 		nonVaccinatedLbl.setText(String.valueOf("Number of Infected People (Not Vaccinated): " +nVacc));
 		oneShotLbl.setText(String.valueOf("Number of Infected People (1 Shot): " +one));
 		twoShotsLbl.setText(String.valueOf("Number of Infected People (2 Shots): " +two));
