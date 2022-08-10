@@ -38,7 +38,7 @@ public class Pandemic_Director extends JPanel
 	private final int IMG_DIM = 10; //size of ball to be drawn
 
 	//REVISION July 14 : create an array of Ball objects here in class scope
-	private final int ARRAY_SIZE = 501; //get input || Last person is infected
+	private final int ARRAY_SIZE = 500; //get input || Last person is infected
 	Person [] people = new Person[ARRAY_SIZE];
 
 	//REVSION NEEDED HERE: need to use the Ball class to create two Ball objects
@@ -99,7 +99,7 @@ public class Pandemic_Director extends JPanel
 		//create amount of people using "cutoff" that is (ARRAY_SIZE/percentage + last cutoff value)
 		int tempPercentage = 15;
 		int tempCutoffInt = ARRAY_SIZE * (tempPercentage / 100);
-		for (int i = 0; i < people.length; i++) {
+		for (int i = 0; i < population; i++) {
 			if (i <= tempCutoffInt) {
 				people[i] = new Person(Person.Health.UNINFECTED, Person.Immunity.NO_IMMUNITY, WIDTH, HEIGHT);
 			}
@@ -123,7 +123,7 @@ public class Pandemic_Director extends JPanel
 		int recovered = 0; 
 		int died = 0;
 		
-		for (int i = 0; i < people.length; i++) {
+		for (int i = 0; i < population; i++) {
 			switch (people[i].getHealthStatus()) {
 				case INFECTED:
 					infected++;
@@ -290,11 +290,8 @@ public class Pandemic_Director extends JPanel
 				// fillOval
 				//REVISION JULY 15: iterate through the loop to paint the balls onto the panel
 				// and set the color using the Ball object's color value
-				for(int i = 0; i < people.length; i++)
+				for(int i = 0; i < population; i++)
 				{
-					if(people[i].getColor() == Color.RED) {
-						int o = 0;
-					}
 					g.setColor(people[i].getColor());
 					g.fillOval(people[i].getxCoord(), people[i].getyCoord(), IMG_DIM, IMG_DIM);
 				}
@@ -324,7 +321,7 @@ public class Pandemic_Director extends JPanel
 
 			if(simulationCycleCount < 450) {
 
-				for(int i = 0; i < people.length; i++)
+				for(int i = 0; i < population; i++)
 				{
 					calcPosition(people[i]);
 				}
@@ -337,7 +334,7 @@ public class Pandemic_Director extends JPanel
 				int firstPersonX,  firstPersonY, secondPersonX, secondPersonY;
 
 				//outer loop gets the firstPerson of the pair and its coordinates.
-				for(int i = 0; i < people.length -1; i++)//LCC to length-1 to avoid out of bounds
+				for(int i = 0; i < population -1; i++)//LCC to length-1 to avoid out of bounds
 				{
 					//get the x and y co-ords of  first Person of the pair
 					firstPersonX = people[i].getxCoord();
@@ -345,7 +342,7 @@ public class Pandemic_Director extends JPanel
 
 					//Inner loop gets the second Person of the pair
 					//start inner loop counter at i+1 so we don't compare the first Person to itself.
-					for(int j = i+1; j < people.length; j++)
+					for(int j = i+1; j < population; j++)
 					{
 						secondPersonX = people[j].getxCoord();
 						secondPersonY = people[j].getyCoord();
@@ -379,12 +376,7 @@ public class Pandemic_Director extends JPanel
 							people[j].setxIncrement(secondPersonnewxIncrement);
 							people[j].setyIncrement(secondPersonnewyIncrement);
 							
-							if(people[j].getHealthStatus() == Person.Health.INFECTED||people[i].getHealthStatus() == Person.Health.INFECTED) {
-
-								int x = 10;
-							}
 							people[j].infectionRNG(people[i]);
-							int t = 0;
 						}//end if
 					}//end inner for
 				}//end outer loop
@@ -412,7 +404,7 @@ public class Pandemic_Director extends JPanel
 				int totalThreeShotDead = 0;
 				int totalNatImmDead = 0;
 				
-				for(int i = 0; i < people.length; i++) {
+				for(int i = 0; i < population; i++) {
 					Person temp = people[i];
 					switch(temp.getHealthStatus()) {
 					case INFECTED:
@@ -491,17 +483,28 @@ public class Pandemic_Director extends JPanel
 	public boolean generatePopulation() {
 		
 		try {
+			//call commit edit to ensure values within the editor are propagated to the model, 
+			//otherwise you will only get the old value.
+			spinPopulation.commitEdit(); 
+			spinUnvaccinated.commitEdit();
+			spinShot1.commitEdit();
+			spinShot2.commitEdit();
+			spinShot3.commitEdit();
+			spinNatural.commitEdit();
 			
 			population = (Integer)spinPopulation.getValue();
+			people = new Person[population];
 			
 			//people = new Person[population]; // throws error?
 			
 			//Assign user based on entered values
-			unvacAmt = (people.length / 100) *  ((Integer) spinUnvaccinated.getValue());
-			shot1Amt = (people.length / 100) *  ((Integer) spinShot1.getValue());
-			shot2Amt = (people.length / 100) *  ((Integer) spinShot2.getValue());
-			shot3Amt = (people.length / 100) *  ((Integer) spinShot3.getValue());
-			naturalImmuAmt = (people.length / 100) *  ((Integer) spinNatural.getValue());
+			float pop = population;
+			double val = pop / 100;
+			unvacAmt = (int) ((val) *  ((Integer) spinUnvaccinated.getValue()));
+			shot1Amt = (int) ((val) *  ((Integer) spinShot1.getValue()));
+			shot2Amt = (int) ((val) *  ((Integer) spinShot2.getValue()));
+			shot3Amt = (int) ((val) *  ((Integer) spinShot3.getValue()));
+			naturalImmuAmt = (int) ((val) *  ((Integer) spinNatural.getValue()));
 			
 			int shot1Count = 0;
 			int shot2Count = 0;
@@ -545,7 +548,7 @@ public class Pandemic_Director extends JPanel
 				}
 			}
 			
-			people[ARRAY_SIZE - 1] = new Person(Person.Health.INFECTED, Person.Immunity.NO_IMMUNITY, WIDTH, HEIGHT, true);
+			people[population - 1] = new Person(Person.Health.INFECTED, Person.Immunity.NO_IMMUNITY, WIDTH, HEIGHT, true);
 			time.start();
 		}
 		//too many values
@@ -574,7 +577,7 @@ public class Pandemic_Director extends JPanel
 		dead = 0;
 		
 		// update population counts
-		for(int i = 0; i < people.length; i++) {
+		for(int i = 0; i < population; i++) {
 			Person temp = people[i];
 			
 			switch(temp.getHealthStatus()) {
