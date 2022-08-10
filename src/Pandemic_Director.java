@@ -78,7 +78,7 @@ public class Pandemic_Director extends JPanel
 	{
 		//create Timer and register a listener for it.
 		hasStarted = false;
-		this.setSize(1000, 900);
+		this.setSize(400, 400);
 		this.time = new Timer(LAG_TIME, new BounceListener() );
 		this.setLayout(new BorderLayout());
 		//template for making new people
@@ -343,25 +343,27 @@ public class Pandemic_Director extends JPanel
 					{
 						//REVSION HERE: not using the xFlag and yFlag anymore, so now we  adjust
 						// the xIncrement and yIncrement by multiplying by -1
-						people[i].setxIncrement(people[i].getxIncrement() * -1);
-						people[i].setyIncrement(people[i].getyIncrement() * -1);
-
-						//now do the secondPerson
-						people[j].setxIncrement(people[j].getxIncrement() * -1);
-						people[j].setyIncrement(people[j].getyIncrement() * -1);
+//						people[i].setxIncrement(people[i].getxIncrement() * -1);
+//						people[i].setyIncrement(people[i].getyIncrement() * -1);
+//
+//						//now do the secondPerson
+//						people[j].setxIncrement(people[j].getxIncrement() * -1);
+//						people[j].setyIncrement(people[j].getyIncrement() * -1);
 
 						//ALSO, to get a bit of directional change generate a new set of random values for the xIncrement
 						//  and yIncrement of each Person involved in the collision and assign them.
-						int firstPersonnewxIncrement = (int)(Math.random()*11 - 5);
-						int firstPersonnewyIncrement = (int)(Math.random()*11 - 5);
-						int secondPersonnewxIncrement = (int)(Math.random()*11 - 5);
-						int secondPersonnewyIncrement = (int)(Math.random()*11 - 5);
-
-						//this will prevent Persons from "getting stuck" on the borders.
-						people[i].setxIncrement(firstPersonnewxIncrement);
-						people[i].setyIncrement(firstPersonnewyIncrement);
-						people[j].setxIncrement(secondPersonnewxIncrement);
-						people[j].setyIncrement(secondPersonnewyIncrement);
+						people[i].changeIncrement();
+						people[j].changeIncrement();
+//						int firstPersonnewxIncrement = (int)(Math.random()*11 - 5);
+//						int firstPersonnewyIncrement = (int)(Math.random()*11 - 5);
+//						int secondPersonnewxIncrement = (int)(Math.random()*11 - 5);
+//						int secondPersonnewyIncrement = (int)(Math.random()*11 - 5);
+//
+//						//this will prevent Persons from "getting stuck" on the borders.
+//						people[i].setxIncrement(firstPersonnewxIncrement);
+//						people[i].setyIncrement(firstPersonnewyIncrement);
+//						people[j].setxIncrement(secondPersonnewxIncrement);
+//						people[j].setyIncrement(secondPersonnewyIncrement);
 						
 						if(people[j].getHealthStatus() == Person.Health.INFECTED||people[i].getHealthStatus() == Person.Health.INFECTED) {
 
@@ -468,6 +470,9 @@ public class Pandemic_Director extends JPanel
 			switch(temp.getHealthStatus()) {
 			case INFECTED:
 				infected++;
+				if (temp.getColor() == Color.GREEN) {
+					reI++;
+				}
 				
 				switch(temp.getImmunity()) {
 				case NO_IMMUNITY:
@@ -499,7 +504,7 @@ public class Pandemic_Director extends JPanel
 		oneShotLbl.setText(String.valueOf("Number of Infected People (1 Shot): " +one));
 		twoShotsLbl.setText(String.valueOf("Number of Infected People (2 Shots): " +two));
 		threeShotsLbl.setText(String.valueOf("Number of Infected People (3 Shots): " +three));
-		naturalReinfectedLbl.setText("Number of Re-Infected People: NOT IMPLEMENTED");
+		naturalReinfectedLbl.setText("Number of Re-Infected People: " + reI);
 		recoveredLbl.setText(String.valueOf("Number of People that have Recovered: " +recov));
 		diedLbl.setText(String.valueOf("Number of Dead People: " + dead));
 	}
