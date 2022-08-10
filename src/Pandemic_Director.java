@@ -217,7 +217,7 @@ public class Pandemic_Director extends JPanel
 			populationOptions.add(lblNatural);
 			populationOptions.add(spinNatural);
 			
-			JLabel lblPopulation = new JLabel("Total Population of Simmulation: ");
+			JLabel lblPopulation = new JLabel("Total Population of Simulation: ");
 			spinPopulation = new JSpinner(new SpinnerNumberModel(500, 100, 500, 10));
 			
 			populationOptions.add(lblPopulation);
@@ -516,7 +516,8 @@ public class Pandemic_Director extends JPanel
 			
 			if(total != 100)throw new ArithmeticException();
 			
-			for(int i = 0; i < people.length; ++i) {
+			//changes number of people based on user input(population = number of people in simulation)
+			for(int i = 0; i < population; ++i) {
 				if(i < unvacAmt) {
 					people[i] = new Person(Person.Health.UNINFECTED, Person.Immunity.NO_IMMUNITY, WIDTH, HEIGHT);
 				}
